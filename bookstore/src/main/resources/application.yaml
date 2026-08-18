@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: bookstore
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/bookstore
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database-platform: org.hibernate.dialect.MySQLDialect
+  sql:
+    init:
+      mode: always
+  security:
+    user:
+      name: ${ADMIN_USERNAME:admin}
+      password: ${ADMIN_PASSWORD}
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
+  ai:
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY}
+
+        chat:
+          model: gemini-3.6-flash
+
+        embedding:
+          api-key: ${GEMINI_API_KEY}
+          text:
+            model: gemini-embedding-001
+
+    model:
+      chat: google-genai
+      embedding:
+        text: google-genai
+
+server:
+  port: 8080
+
+app:
+  upload:
+    dir: uploads
+    public-path: /uploads

@@ -1,0 +1,107 @@
+@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&family=Source+Serif+4:wght@500;600;700;800&display=swap");
+@import "tailwindcss";
+
+:root {
+  color: #1b1c1c;
+  background: #fbf9f8;
+  font-family:
+    "Hanken Grotesk", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(255, 202, 152, 0.28), transparent 32rem),
+    linear-gradient(180deg, #fbf9f8 0%, #f5f3f3 100%);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.font-serif-display {
+  font-family: "Source Serif 4", Georgia, serif;
+}
+
+.font-mono-label {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+}
+
+.paper-panel {
+  border: 1px solid rgba(196, 198, 205, 0.72);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 10px 30px rgba(26, 46, 68, 0.05);
+}
+
+.book-shadow {
+  box-shadow:
+    0 16px 30px rgba(3, 25, 46, 0.12),
+    inset -8px 0 12px rgba(3, 25, 46, 0.14);
+}
+
+.archival-label {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.du-lieu-heading {
+  background: #03192e;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.du-lieu-row {
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.du-lieu-row:hover {
+  background: rgba(125, 86, 45, 0.06);
+}
+
+.select-paper,
+.textarea-paper {
+  border: 1px solid #c4c6cd;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.82);
+  color: #03192e;
+  outline: none;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease;
+}
+
+.select-paper:focus,
+.textarea-paper:focus {
+  border-color: #03192e;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(3, 25, 46, 0.1);
+}
