@@ -29,7 +29,8 @@ public class CauHinhBaoMat {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cauHinh = new CorsConfiguration();
-        cauHinh.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://127.0.0.1:5173"));
+        cauHinh.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://127.0.0.1:5173",
+                "https://fe-production-90c2.up.railway.app"));
         cauHinh.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         cauHinh.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         cauHinh.setAllowCredentials(true);
