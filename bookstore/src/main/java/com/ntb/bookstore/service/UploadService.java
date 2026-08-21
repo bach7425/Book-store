@@ -30,25 +30,25 @@ public class UploadService {
 
         String duoiFile = StringUtils.getFilenameExtension(file.getOriginalFilename());
         if (duoiFile == null) {
-            throw new HethongLoiException("File anh khong hop le");
+            throw new HethongLoiException("File ảnh không hợp lệ");
         }
         duoiFile = duoiFile.toLowerCase(Locale.ROOT);
         if (!duoi_file_cho_phep.contains(duoiFile)) {
-            throw new HethongLoiException("Chi ho tro anh jpg, jpeg, png, webp");
+            throw new HethongLoiException("Chỉ hỗ trợ ảnh jpg, jpeg, png, webp");
         }
 
         String tenFile = UUID.randomUUID() + "." + duoiFile;
         Path thuMucGoc = Paths.get(cauHinhUpload.getDir()).toAbsolutePath().normalize();
         Path thuMucLuu = thuMucGoc.resolve(thuMuc).normalize();
         if (!thuMucLuu.startsWith(thuMucGoc)) {
-            throw new HethongLoiException("Thu muc upload khong hop le");
+            throw new HethongLoiException("Thư mục upload không hợp lệ");
         }
 
         try {
             Files.createDirectories(thuMucLuu);
             file.transferTo(thuMucLuu.resolve(tenFile));
         } catch (IOException ex) {
-            throw new HethongLoiException("Khong the luu file anh");
+            throw new HethongLoiException("Không thể lưu file ảnh");
         }
 
         String publicPath = cauHinhUpload.getPublicPath();
@@ -60,11 +60,11 @@ public class UploadService {
 
     private void kiemTraFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {
-            throw new HethongLoiException("File anh khong duoc de trong");
+            throw new HethongLoiException("File ảnh không được để trống");
         }
         String contentType = file.getContentType();
         if (contentType == null || !loai_file_cho_phep.contains(contentType.toLowerCase(Locale.ROOT))) {
-            throw new HethongLoiException("File upload phai la anh jpg, png hoac webp");
+            throw new HethongLoiException("File upload phải là ảnh jpg, png hoặc webp");
         }
     }
 }

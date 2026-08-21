@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
-import { UserPlus } from 'lucide-react';
+import { ArrowRight, Badge, Eye, EyeOff, Lock, Mail, Phone, UserRound } from 'lucide-react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { xacThucApi, type DangKyRequest } from '../../api/xacThucApi';
@@ -11,6 +12,7 @@ export function DangKyPage() {
   const navigate = useNavigate();
   const baoTin = useToastStore((state) => state.baoTin);
   const baoLoi = useToastStore((state) => state.baoLoi);
+  const [hienMatKhau, setHienMatKhau] = useState(false);
   const { register, handleSubmit } = useForm<DangKyRequest>();
   const mutation = useMutation({
     mutationFn: xacThucApi.dangKy,
@@ -22,33 +24,61 @@ export function DangKyPage() {
   });
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 lg:grid-cols-[420px_1fr]">
-      <aside className="paper-panel h-fit rounded p-6">
-        <p className="archival-label text-[#7d562d]">Thành viên mới</p>
-        <h1 className="font-serif-display mt-2 text-4xl font-bold leading-tight text-[#03192e]">Mở một tài khoản đọc sách riêng của bạn</h1>
-        <p className="mt-4 text-sm leading-6 text-[#43474d]">Tài khoản giúp lưu giỏ hàng, địa chỉ giao hàng, lịch sử đơn và danh sách sách yêu thích.</p>
-        <div className="mt-6 rounded border border-[#c4c6cd] bg-[#fbf9f8] p-4">
-          <p className="archival-label text-[#03192e]">Dữ liệu đăng ký</p>
-          <p className="mt-2 text-sm text-[#43474d]">Tên đăng nhập, email, số điện thoại và mật khẩu được gửi đúng DTO tiếng Việt của backend.</p>
+    <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-6xl items-center justify-center px-4 py-12">
+      <form onSubmit={handleSubmit((duLieu) => mutation.mutate(duLieu))} className="paper-panel w-full max-w-lg rounded p-8 md:p-10">
+        <div className="mb-8 text-center">
+          <h1 className="font-serif-display text-3xl font-bold leading-tight text-[#03192e]">Gia nhập cộng đồng yêu sách</h1>
+          <p className="mt-2 text-sm text-[#43474d]">Book Store - Nơi hội tụ những tâm hồn đồng điệu.</p>
         </div>
-      </aside>
-      <form onSubmit={handleSubmit((duLieu) => mutation.mutate(duLieu))} className="paper-panel rounded p-6">
-        <div className="flex items-center gap-3">
-          <span className="grid h-11 w-11 place-items-center rounded bg-[#03192e] text-white"><UserPlus size={20} /></span>
-          <div>
-            <p className="archival-label text-[#7d562d]">Tài khoản</p>
-            <h2 className="font-serif-display text-3xl font-bold text-[#03192e]">Tạo tài khoản</h2>
-          </div>
+        <div className="grid gap-5">
+          <label className="block text-sm font-semibold text-[#03192e]">
+            Họ và tên
+            <span className="relative mt-2 block">
+              <UserRound className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#74777d]" size={18} />
+              <Input className="pl-10" placeholder="Nguyễn Văn A" {...register('hoTen', { required: true })} />
+            </span>
+          </label>
+          <label className="block text-sm font-semibold text-[#03192e]">
+            Tên đăng nhập
+            <span className="relative mt-2 block">
+              <Badge className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#74777d]" size={18} />
+              <Input className="pl-10" placeholder="nguyenvana123" {...register('tenDangNhap', { required: true })} />
+            </span>
+          </label>
+          <label className="block text-sm font-semibold text-[#03192e]">
+            Email
+            <span className="relative mt-2 block">
+              <Mail className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#74777d]" size={18} />
+              <Input className="pl-10" type="email" placeholder="nguyenvana@example.com" {...register('email', { required: true })} />
+            </span>
+          </label>
+          <label className="block text-sm font-semibold text-[#03192e]">
+            Số điện thoại
+            <span className="relative mt-2 block">
+              <Phone className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#74777d]" size={18} />
+              <Input className="pl-10" placeholder="0123 456 789" {...register('soDienThoai')} />
+            </span>
+          </label>
+          <label className="block text-sm font-semibold text-[#03192e]">
+            Mật khẩu
+            <span className="relative mt-2 block">
+              <Lock className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#74777d]" size={18} />
+              <Input className="pl-10 pr-11" type={hienMatKhau ? 'text' : 'password'} placeholder="••••••••" {...register('matKhau', { required: true })} />
+              <button
+                type="button"
+                className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded text-[#74777d] transition hover:bg-[#efeded] hover:text-[#03192e]"
+                onClick={() => setHienMatKhau((value) => !value)}
+                aria-label={hienMatKhau ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+              >
+                {hienMatKhau ? <EyeOff size={17} /> : <Eye size={17} />}
+              </button>
+            </span>
+          </label>
         </div>
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
-          <label className="block text-sm font-semibold text-[#03192e]">Họ và tên<Input className="mt-2" {...register('hoTen', { required: true })} /></label>
-          <label className="block text-sm font-semibold text-[#03192e]">Tên đăng nhập<Input className="mt-2" {...register('tenDangNhap', { required: true })} /></label>
-          <label className="block text-sm font-semibold text-[#03192e]">Email<Input className="mt-2" type="email" {...register('email', { required: true })} /></label>
-          <label className="block text-sm font-semibold text-[#03192e]">Số điện thoại<Input className="mt-2" {...register('soDienThoai')} /></label>
-          <label className="block text-sm font-semibold text-[#03192e] md:col-span-2">Mật khẩu<Input className="mt-2" type="password" {...register('matKhau', { required: true })} /></label>
+        <Button className="mt-8 w-full" disabled={mutation.isPending}>Đăng ký <ArrowRight size={18} /></Button>
+        <div className="mt-8 border-t border-[#e4e2e2] pt-6 text-center">
+          <p className="text-sm text-[#43474d]">Đã có tài khoản? <Link className="font-bold text-[#7d562d] hover:text-[#03192e]" to="/dang-nhap">Đăng nhập</Link></p>
         </div>
-        <Button className="mt-6 w-full" disabled={mutation.isPending}>Đăng ký</Button>
-        <p className="mt-4 text-center text-sm text-[#43474d]">Đã có tài khoản? <Link className="font-semibold text-[#7d562d]" to="/dang-nhap">Đăng nhập</Link></p>
       </form>
     </div>
   );

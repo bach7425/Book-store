@@ -42,11 +42,17 @@ public class NguoiDungService {
                 .build();
     }
 
-    public NguoiDungProfileResponse capNhatProfile(Long maNguoiDung, String hoVaTen, String soDienThoai) {
+    public NguoiDungProfileResponse capNhatProfile(Long maNguoiDung, String hoVaTen, String email, String soDienThoai) {
         NguoiDung nguoiDung = nguoiDungRepository.findById(maNguoiDung)
                 .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy người dùng", maNguoiDung));
         if (hoVaTen != null && !hoVaTen.isBlank()) {
             nguoiDung.setHoVaTen(hoVaTen);
+        }
+        if (email != null && !email.isBlank() && !email.equalsIgnoreCase(nguoiDung.getEmail())) {
+            if (nguoiDungRepository.existsByEmail(email)) {
+                throw new HethongLoiException("Email đã tồn tại: " + email);
+            }
+            nguoiDung.setEmail(email);
         }
         if (soDienThoai != null && !soDienThoai.isBlank()) {
             nguoiDung.setSoDienThoai(soDienThoai);
@@ -80,7 +86,7 @@ public class NguoiDungService {
     public List<DiaChiResponse> layDanhSachDiaChi(Long maNguoiDung) {
         List<DiaChi> diaChiList = diaChiRepository.findByNguoiDungMaNguoiDung(maNguoiDung);
         if (diaChiList.isEmpty()) {
-            throw new KhongCoDuLieuException("Không tìm thấy địa chỉ nào ");
+            throw new KhongCoDuLieuException("Không tìm thấy địa chỉ nào");
         }
         return diaChiList.stream()
                 .map(this::toDiaChiResponse)

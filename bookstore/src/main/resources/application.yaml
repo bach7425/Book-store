@@ -1,6 +1,8 @@
 spring:
   application:
     name: bookstore
+  config:
+    import: optional:file:.env[.properties]
 
   datasource:
     url: jdbc:mysql://localhost:3306/bookstore
@@ -28,22 +30,25 @@ spring:
       max-file-size: 5MB
       max-request-size: 10MB
   ai:
+    openai:
+      base-url: https://api.groq.com/openai/v1
+      api-key: ${GROQ_API_KEY}
+
+      chat:
+        model: openai/gpt-oss-20b
+
     google:
       genai:
-        api-key: ${GEMINI_API_KEY}
-
-        chat:
-          model: gemini-3.6-flash
-
         embedding:
           api-key: ${GEMINI_API_KEY}
           text:
             model: gemini-embedding-001
-
     model:
-      chat: google-genai
+      chat: openai
       embedding:
         text: google-genai
+tavily:
+  api-key: ${TAVILY_API_KEY}
 
 server:
   port: 8080

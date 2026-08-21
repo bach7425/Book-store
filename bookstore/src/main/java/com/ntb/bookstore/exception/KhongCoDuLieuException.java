@@ -6,6 +6,6 @@ public class KhongCoDuLieuException extends RuntimeException {
     }
 
     public KhongCoDuLieuException(String thongbao, Object id) {
-        super(thongbao + "với mã : " + id);
+        super(thongbao + " với mã: " + id);
     }
 }

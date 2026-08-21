@@ -1,8 +1,11 @@
 package com.ntb.bookstore.CauHinh;
 
 import org.springframework.context.annotation.Configuration;
+
+import com.ntb.bookstore.service.AI_tool.RagService;
+
 import lombok.RequiredArgsConstructor;
-import com.ntb.bookstore.service.RagService;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 

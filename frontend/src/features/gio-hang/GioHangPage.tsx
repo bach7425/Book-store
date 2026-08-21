@@ -28,13 +28,15 @@ export function GioHangPage() {
   });
   const items = data?.items?.duLieu ?? [];
   const coSanPham = items.length > 0;
-  console.log('GioHangPage data:', items);
   return (
     <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10">
+      <div className="mb-8 border-b border-[#c4c6cd] pb-5">
+        <p className="archival-label text-[#7d562d]">Giỏ sách cá nhân</p>
+        <h1 className="font-serif-display mt-1 text-4xl font-bold text-[#03192e]">Giỏ hàng</h1>
+        <p className="mt-1 text-sm text-[#43474d]">{data?.tongSoLuong ?? 0} sản phẩm trong giỏ</p>
+      </div>
       <div className={`grid gap-8 ${coSanPham ? 'lg:grid-cols-[1fr_360px]' : ''}`}>
         <section>
-        <h1 className="font-serif-display mt-1 text-4xl font-bold text-[#03192e]">Giỏ hàng</h1>
-        <p></p>
         {isLoading ? <p className="mt-4 text-stone-500">Đang tải giỏ hàng...</p> : error ? <OTrong tieuDe="Chưa có sản phẩm trong giỏ hàng" moTa={error.message} /> : !coSanPham ? <OTrong tieuDe="Giỏ hàng đang trống" moTa="Hãy thêm sách vào giỏ hàng trước khi thanh toán." /> : (
           <Bang>
             <table className="w-full min-w-[720px] text-left text-sm">
@@ -57,7 +59,7 @@ export function GioHangPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3">{dinhDangTien(item.donGia)}</td>
-                    <td className="px-4 py-3"><div className="inline-flex items-center rounded border border-[#c4c6cd] bg-[#fbf9f8]"><button className="p-2" disabled={item.soLuong <= 1} onClick={() => capNhat.mutate({ id: item.maChiTietGioHang, soLuong: item.soLuong - 1 })}><Minus size={16} /></button><span className="font-mono-label w-10 text-center">{item.soLuong}</span><button className="p-2" onClick={() => capNhat.mutate({ id: item.maChiTietGioHang, soLuong: item.soLuong + 1 })}><Plus size={16} /></button></div></td>
+                    <td className="px-4 py-3"><div className="inline-flex items-center rounded border border-[#c4c6cd] bg-[#fbf9f8]">{item.soLuong > 1 ? <button className="p-2" onClick={() => capNhat.mutate({ id: item.maChiTietGioHang, soLuong: item.soLuong - 1 })}><Minus size={16} /></button> : null}<span className="font-mono-label w-10 text-center">{item.soLuong}</span><button className="p-2" onClick={() => capNhat.mutate({ id: item.maChiTietGioHang, soLuong: item.soLuong + 1 })}><Plus size={16} /></button></div></td>
                     <td className="font-mono-label px-4 py-3 font-semibold">{dinhDangTien(item.donGia * item.soLuong)}</td>
                     <td className="px-4 py-3 text-right"><Button kieu="rong" onClick={() => xoa.mutate(item.maChiTietGioHang)}><Trash2 size={16} /></Button></td>
                   </tr>

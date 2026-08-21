@@ -50,16 +50,16 @@ public class ThongBaoService {
             return;
         }
         if (maNguoiDung == null) {
-            throw new HethongLoiException("Ma nguoi dung la bat buoc khi khong gui tat ca");
+            throw new HethongLoiException("Mã người dùng là bắt buộc khi không gửi tất cả");
         }
         NguoiDung nguoiDung = nguoiDungRepository.findById(maNguoiDung)
-                .orElseThrow(() -> new KhongCoDuLieuException("Khong tim thay nguoi dung", maNguoiDung));
+                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy người dùng", maNguoiDung));
         guiChoNguoiDung(nguoiDung, tieuDe, noiDung, loaiThongBao, duongDan);
     }
 
     public PageResponse<ThongBaoResponse> danhSachThongBao(Long maNguoiDung, int page, int size, String baseUrl) {
         NguoiDung nguoiDung = nguoiDungRepository.findById(maNguoiDung)
-                .orElseThrow(() -> new KhongCoDuLieuException("Khong tim thay nguoi dung", maNguoiDung));
+                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy người dùng", maNguoiDung));
         Pageable pageable = PageRequest.of(page, size);
         Page<ThongBao> thongBaoPage = thongBaoRepository.findByNguoiDungOrderByNgayTaoDesc(nguoiDung, pageable);
         return new PageResponse<>(thongBaoPage.map(this::toResponse), baseUrl);
@@ -67,17 +67,17 @@ public class ThongBaoService {
 
     public Long demThongBaoChuaDoc(Long maNguoiDung) {
         NguoiDung nguoiDung = nguoiDungRepository.findById(maNguoiDung)
-                .orElseThrow(() -> new KhongCoDuLieuException("Khong tim thay nguoi dung", maNguoiDung));
+                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy người dùng", maNguoiDung));
         return thongBaoRepository.countByNguoiDungAndDaDocFalse(nguoiDung);
     }
 
     public ThongBaoResponse danhDauDaDoc(Long maNguoiDung, Long maThongBao) {
         NguoiDung nguoiDung = nguoiDungRepository.findById(maNguoiDung)
-                .orElseThrow(() -> new KhongCoDuLieuException("Khong tim thay nguoi dung", maNguoiDung));
+                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy người dùng", maNguoiDung));
         ThongBao thongBao = thongBaoRepository.findById(maThongBao)
-                .orElseThrow(() -> new KhongCoDuLieuException("Khong tim thay thong bao", maThongBao));
+                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy thông báo", maThongBao));
         if (!thongBao.getNguoiDung().getMaNguoiDung().equals(nguoiDung.getMaNguoiDung())) {
-            throw new HethongLoiException("Ban khong co quyen cap nhat thong bao nay");
+            throw new HethongLoiException("Bạn không có quyền cập nhật thông báo này");
         }
         thongBao.setDaDoc(true);
         return toResponse(thongBaoRepository.save(thongBao));
@@ -85,7 +85,7 @@ public class ThongBaoService {
 
     public void danhDauTatCaDaDoc(Long maNguoiDung) {
         NguoiDung nguoiDung = nguoiDungRepository.findById(maNguoiDung)
-                .orElseThrow(() -> new KhongCoDuLieuException("Khong tim thay nguoi dung", maNguoiDung));
+                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy người dùng", maNguoiDung));
         thongBaoRepository.findByNguoiDungAndDaDocFalse(nguoiDung).forEach(thongBao -> {
             thongBao.setDaDoc(true);
             thongBaoRepository.save(thongBao);
@@ -110,7 +110,7 @@ public class ThongBaoService {
         try {
             return LoaiThongBao.valueOf(loai.toUpperCase());
         } catch (IllegalArgumentException exception) {
-            throw new HethongLoiException("Loai thong bao khong hop le: " + loai);
+            throw new HethongLoiException("Loại thông báo không hợp lệ: " + loai);
         }
     }
 

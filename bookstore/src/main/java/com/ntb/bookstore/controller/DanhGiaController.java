@@ -40,7 +40,7 @@ public class DanhGiaController {
         var nguoiDung = xacThucService.layNguoiDungHienTaiNeuCo();
         Long maNguoiDung = nguoiDung == null ? null : nguoiDung.getMaNguoiDung();
         String baseUrl = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
-        return ResponseEntity.ok(ApiResponse.of(true, "Lay danh gia thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Lấy đánh giá thành công", LocalDateTime.now(),
                 danhGiaService.layDanhGiaSach(maSach, maNguoiDung, page, size, baseUrl)));
     }
 
@@ -49,7 +49,7 @@ public class DanhGiaController {
     public ResponseEntity<ApiResponse<DanhGiaResponse>> themDanhGia(@PathVariable Long maSach,
             @RequestBody ThemDanhGiaRequest request) {
         Long maNguoiDung = xacThucService.layMaNguoiDungHienTai();
-        return ResponseEntity.ok(ApiResponse.of(true, "Gui danh gia thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Gửi đánh giá thành công", LocalDateTime.now(),
                 danhGiaService.themDanhGia(maNguoiDung, maSach, request.getSoSao(), request.getNoiDung())));
     }
 
@@ -58,7 +58,7 @@ public class DanhGiaController {
     public ResponseEntity<ApiResponse<DanhGiaResponse>> capNhatDanhGia(@PathVariable Long maDanhGia,
             @RequestBody ThemDanhGiaRequest request) {
         Long maNguoiDung = xacThucService.layMaNguoiDungHienTai();
-        return ResponseEntity.ok(ApiResponse.of(true, "Cap nhat danh gia thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Cập nhật đánh giá thành công", LocalDateTime.now(),
                 danhGiaService.capNhatDanhGia(maNguoiDung, maDanhGia, request.getSoSao(), request.getNoiDung())));
     }
 
@@ -67,7 +67,7 @@ public class DanhGiaController {
     public ResponseEntity<ApiResponse<Void>> xoaDanhGia(@PathVariable Long maDanhGia) {
         Long maNguoiDung = xacThucService.layMaNguoiDungHienTai();
         danhGiaService.xoaDanhGia(maNguoiDung, maDanhGia);
-        return ResponseEntity.ok(ApiResponse.of(true, "Xoa danh gia thanh cong", LocalDateTime.now(), null));
+        return ResponseEntity.ok(ApiResponse.of(true, "Xóa đánh giá thành công", LocalDateTime.now(), null));
     }
 
 }

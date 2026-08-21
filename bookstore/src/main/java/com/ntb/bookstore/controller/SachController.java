@@ -36,13 +36,13 @@ public class SachController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         String baseUrl = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
-        return ResponseEntity.ok(ApiResponse.of(true, "Lay danh sach sach thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Lấy danh sách sách thành công", LocalDateTime.now(),
                 sachService.danhSachSach(tuKhoa, tacGiaId, theLoaiId, giaMin, giaMax, sort, page, size, baseUrl)));
     }
 
     @GetMapping("/{maSach}")
     public ResponseEntity<ApiResponse<SachResponse>> chiTietSach(@PathVariable Long maSach) {
-        return ResponseEntity.ok(ApiResponse.of(true, "Lay chi tiet sach thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Lấy chi tiết sách thành công", LocalDateTime.now(),
                 sachService.chiTietSach(maSach)));
     }
 }

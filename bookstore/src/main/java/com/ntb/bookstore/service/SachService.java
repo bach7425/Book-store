@@ -27,6 +27,7 @@ import com.ntb.bookstore.repository.DanhGiaRepository;
 import com.ntb.bookstore.repository.TacGiaRepository;
 import com.ntb.bookstore.repository.TheLoaiRepository;
 import com.ntb.bookstore.repository.TonKhoRepository;
+import com.ntb.bookstore.service.AI_tool.RagService;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -119,10 +120,10 @@ public class SachService {
 
     public SachResponse capNhatTonKho(Long maSach, Integer soLuong) {
         if (soLuong == null || soLuong < 0) {
-            throw new HethongLoiException("So luong ton kho khong duoc am");
+            throw new HethongLoiException("Số lượng tồn kho không được âm");
         }
         Sach sach = sachRepository.findById(maSach)
-                .orElseThrow(() -> new KhongCoDuLieuException("Khong tim thay sach", maSach));
+                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy sách", maSach));
         TonKho tonKho = tonKhoRepository.findBySachMaSach(maSach)
                 .orElse(TonKho.builder().sach(sach).soLuong(0).build());
         tonKho.setSoLuong(soLuong);
@@ -132,16 +133,16 @@ public class SachService {
 
     private void kiemTraGiaVaTonKho(BigDecimal gia, Integer soLuongTon) {
         if (gia != null && gia.compareTo(BigDecimal.ZERO) < 0) {
-            throw new HethongLoiException("Gia sach khong duoc am");
+            throw new HethongLoiException("Giá sách không được âm");
         }
         if (soLuongTon != null && soLuongTon < 0) {
-            throw new HethongLoiException("So luong ton kho khong duoc am");
+            throw new HethongLoiException("Số lượng tồn kho không được âm");
         }
     }
 
     public SachResponse capNhatAnhBia(Long maSach, MultipartFile file) {
         Sach sach = sachRepository.findById(maSach)
-                .orElseThrow(() -> new KhongCoDuLieuException("Khong tim thay sach", maSach));
+                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy sách", maSach));
         String duongDanAnh = uploadService.luuAnh(file, "sach");
         sach.setAnhBia(duongDanAnh);
         return toResponse(sachRepository.save(sach));
@@ -163,10 +164,10 @@ public class SachService {
 
     public TacGiaResponse capNhatTacGia(Long maTacGia, String ten, String tieuSu, String anhDaiDien) {
         TacGia tacGia = tacGiaRepository.findById(maTacGia)
-                .orElseThrow(() -> new KhongCoDuLieuException("Khong tim thay tac gia", maTacGia));
+                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy tác giả", maTacGia));
         if (ten != null) {
             if (ten.isBlank()) {
-                throw new HethongLoiException("Ten tac gia khong duoc de trong");
+                throw new HethongLoiException("Tên tác giả không được để trống");
             }
             tacGia.setTen(ten);
         }
@@ -181,7 +182,7 @@ public class SachService {
 
     public TacGiaResponse capNhatAnhDaiDienTacGia(Long maTacGia, MultipartFile file) {
         TacGia tacGia = tacGiaRepository.findById(maTacGia)
-                .orElseThrow(() -> new KhongCoDuLieuException("Khong tim thay tac gia", maTacGia));
+                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy tác giả", maTacGia));
         String duongDanAnh = uploadService.luuAnh(file, "tac-gia");
         tacGia.setAnhDaiDien(duongDanAnh);
         return toTacGiaResponse(tacGiaRepository.save(tacGia));
@@ -201,10 +202,10 @@ public class SachService {
 
     public TheLoaiResponse capNhatTheLoai(Long maTheLoai, String ten, String moTa) {
         TheLoai theLoai = theLoaiRepository.findById(maTheLoai)
-                .orElseThrow(() -> new KhongCoDuLieuException("Khong tim thay the loai", maTheLoai));
+                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy thể loại", maTheLoai));
         if (ten != null) {
             if (ten.isBlank()) {
-                throw new HethongLoiException("Ten the loai khong duoc de trong");
+                throw new HethongLoiException("Tên thể loại không được để trống");
             }
             theLoai.setTen(ten);
         }

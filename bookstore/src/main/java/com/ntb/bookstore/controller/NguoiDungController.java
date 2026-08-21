@@ -54,7 +54,7 @@ public class NguoiDungController {
                                 "Cập nhật profile thành công",
                                 LocalDateTime.now(),
                                 nguoiDungService.capNhatProfile(maNguoiDung, request.getHoVaTen(),
-                                                request.getSoDienThoai())));
+                                                request.getEmail(), request.getSoDienThoai())));
         }
 
         @PostMapping("/anh-dai-dien")
@@ -63,7 +63,7 @@ public class NguoiDungController {
                         @RequestParam("file") MultipartFile file) {
                 Long maNguoiDung = xacThucService.layMaNguoiDungHienTai();
                 return ResponseEntity.ok(ApiResponse.of(true,
-                                "Cap nhat anh dai dien thanh cong",
+                                "Cập nhật ảnh đại diện thành công",
                                 LocalDateTime.now(),
                                 nguoiDungService.capNhatAnhDaiDien(maNguoiDung, file)));
         }

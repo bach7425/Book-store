@@ -3,7 +3,7 @@ import { goiApi } from './client';
 
 export const nguoiDungApi = {
   layThongTinNguoiDung: () => goiApi<NguoiDung>({ url: '/api/nguoi-dung/thong-tin' }),
-  capNhatThongTin: (duLieu: { hoVaTen: string; soDienThoai?: string }) =>
+  capNhatThongTin: (duLieu: { hoVaTen: string; email: string; soDienThoai?: string }) =>
     goiApi<NguoiDung>({ url: '/api/nguoi-dung/thong-tin', method: 'PUT', data: duLieu }),
   capNhatAnhDaiDien: async (file: File) => {
     const formData = new FormData();

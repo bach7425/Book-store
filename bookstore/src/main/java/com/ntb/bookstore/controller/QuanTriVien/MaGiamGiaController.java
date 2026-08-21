@@ -38,26 +38,26 @@ public class MaGiamGiaController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String trangThai) {
         String baseUrl = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
-        return ResponseEntity.ok(ApiResponse.of(true, "Lay danh sach ma giam gia thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Lấy danh sách mã giảm giá thành công", LocalDateTime.now(),
                 maGiamGiaService.danhSachMaGiamGia(trangThai, page, size, baseUrl)));
     }
 
     @GetMapping("/{maGiamGia}")
     public ResponseEntity<ApiResponse<MaGiamGiaResponse>> chiTietMaGiamGia(@PathVariable Long maGiamGia) {
-        return ResponseEntity.ok(ApiResponse.of(true, "Lay chi tiet ma giam gia thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Lấy chi tiết mã giảm giá thành công", LocalDateTime.now(),
                 maGiamGiaService.chiTietMaGiamGia(maGiamGia)));
     }
 
     @PostMapping
     public ResponseEntity<ApiResponse<MaGiamGiaResponse>> taoMaGiamGia(@RequestBody TaoMaGiamGiaRequest request) {
-        return ResponseEntity.ok(ApiResponse.of(true, "Tao ma giam gia thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Tạo mã giảm giá thành công", LocalDateTime.now(),
                 maGiamGiaService.taoMaGiamGia(request)));
     }
 
     @PutMapping("/{maGiamGia}")
     public ResponseEntity<ApiResponse<MaGiamGiaResponse>> capNhatMaGiamGia(@PathVariable Long maGiamGia,
             @RequestBody CapNhatMaGiamGiaRequest request) {
-        return ResponseEntity.ok(ApiResponse.of(true, "Cap nhat ma giam gia thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Cập nhật mã giảm giá thành công", LocalDateTime.now(),
                 maGiamGiaService.capNhatMaGiamGia(maGiamGia, request)));
     }
 

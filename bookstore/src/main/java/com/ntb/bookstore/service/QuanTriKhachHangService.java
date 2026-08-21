@@ -58,7 +58,7 @@ public class QuanTriKhachHangService {
 
     private NguoiDung layKhachHang(Long maNguoiDung) {
         return nguoiDungRepository.findByMaNguoiDungAndVaiTro(maNguoiDung, VaiTro.NGUOI_DUNG)
-                .orElseThrow(() -> new KhongCoDuLieuException("Khong tim thay khach hang", maNguoiDung));
+                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy khách hàng", maNguoiDung));
     }
 
     private KhachHangResponse toResponse(NguoiDung nguoiDung) {

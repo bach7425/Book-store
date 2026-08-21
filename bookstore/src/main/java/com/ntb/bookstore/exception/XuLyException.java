@@ -36,7 +36,7 @@ public class XuLyException {
 
         ApiResponse<Void> response = ApiResponse.<Void>builder()
                 .thanhCong(false)
-                .thongBao("File upload vuot qua dung luong cho phep")
+                .thongBao("File upload vượt quá dung lượng cho phép")
                 .duLieu(null)
                 .thoiGian(LocalDateTime.now())
                 .build();
@@ -50,7 +50,7 @@ public class XuLyException {
 
         ApiResponse<Void> response = ApiResponse.<Void>builder()
                 .thanhCong(false)
-                .thongBao("Du lieu upload khong hop le")
+                .thongBao("Dữ liệu upload không hợp lệ")
                 .duLieu(null)
                 .thoiGian(LocalDateTime.now())
                 .build();

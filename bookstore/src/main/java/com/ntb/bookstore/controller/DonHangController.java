@@ -41,7 +41,7 @@ public class DonHangController {
                 request.getMaDiaChi(),
                 request.getPhuongThucThanhToan(),
                 request.getMaGiamGia());
-        return ResponseEntity.ok(ApiResponse.of(true, "Tao don hang thanh cong", LocalDateTime.now(), response));
+        return ResponseEntity.ok(ApiResponse.of(true, "Tạo đơn hàng thành công", LocalDateTime.now(), response));
     }
 
     @GetMapping
@@ -52,7 +52,7 @@ public class DonHangController {
             @RequestParam(defaultValue = "10") int size) {
         Long maNguoiDung = xacThucService.layMaNguoiDungHienTai();
         String baseUrl = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
-        return ResponseEntity.ok(ApiResponse.of(true, "Lay danh sach don hang thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Lấy danh sách đơn hàng thành công", LocalDateTime.now(),
                 donHangService.danhSachDonHang(maNguoiDung, status, page, size, baseUrl)));
     }
 
@@ -63,7 +63,7 @@ public class DonHangController {
             @RequestParam(defaultValue = "10") int size) {
         Long maNguoiDung = xacThucService.layMaNguoiDungHienTai();
         String baseUrl = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
-        return ResponseEntity.ok(ApiResponse.of(true, "Lay lich su don hang thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Lấy lịch sử đơn hàng thành công", LocalDateTime.now(),
                 donHangService.lichSuDonHang(maNguoiDung, page, size, baseUrl)));
     }
 
@@ -71,7 +71,7 @@ public class DonHangController {
     @PreAuthorize("hasAnyAuthority('ROLE_QUAN_TRI_VIEN','ROLE_NGUOI_DUNG')")
     public ResponseEntity<ApiResponse<DonHangResponse>> chiTietDonHang(@PathVariable Long maDonHang) {
         Long maNguoiDung = xacThucService.layMaNguoiDungHienTai();
-        return ResponseEntity.ok(ApiResponse.of(true, "Lay chi tiet don hang thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Lấy chi tiết đơn hàng thành công", LocalDateTime.now(),
                 donHangService.chiTietDonHang(maNguoiDung, maDonHang)));
     }
 
@@ -79,7 +79,7 @@ public class DonHangController {
     @PreAuthorize("hasAnyAuthority('ROLE_NGUOI_DUNG')")
     public ResponseEntity<ApiResponse<DonHangResponse>> huyDonHang(@PathVariable Long maDonHang) {
         Long maNguoiDung = xacThucService.layMaNguoiDungHienTai();
-        return ResponseEntity.ok(ApiResponse.of(true, "Huy don hang thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Hủy đơn hàng thành công", LocalDateTime.now(),
                 donHangService.huyDonHang(maNguoiDung, maDonHang)));
     }
 
@@ -87,7 +87,7 @@ public class DonHangController {
     @PreAuthorize("hasAnyAuthority('ROLE_NGUOI_DUNG')")
     public ResponseEntity<ApiResponse<DonHangResponse>> thanhToanDonHang(@PathVariable Long maDonHang) {
         Long maNguoiDung = xacThucService.layMaNguoiDungHienTai();
-        return ResponseEntity.ok(ApiResponse.of(true, "Thanh toan don hang thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Thanh toán đơn hàng thành công", LocalDateTime.now(),
                 donHangService.thanhToanDonHang(maNguoiDung, maDonHang)));
     }
 }

@@ -35,21 +35,21 @@ public class ThongBaoController {
             @RequestParam(defaultValue = "10") int size) {
         Long maNguoiDung = xacThucService.layMaNguoiDungHienTai();
         String baseUrl = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
-        return ResponseEntity.ok(ApiResponse.of(true, "Lay danh sach thong bao thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Lấy danh sách thông báo thành công", LocalDateTime.now(),
                 thongBaoService.danhSachThongBao(maNguoiDung, page, size, baseUrl)));
     }
 
     @GetMapping("/thong-bao/chua-doc/so-luong")
     public ResponseEntity<ApiResponse<Long>> demThongBaoChuaDoc() {
         Long maNguoiDung = xacThucService.layMaNguoiDungHienTai();
-        return ResponseEntity.ok(ApiResponse.of(true, "Lay so luong thong bao chua doc thanh cong",
+        return ResponseEntity.ok(ApiResponse.of(true, "Lấy số lượng thông báo chưa đọc thành công",
                 LocalDateTime.now(), thongBaoService.demThongBaoChuaDoc(maNguoiDung)));
     }
 
     @PatchMapping("/thong-bao/{maThongBao}/da-doc")
     public ResponseEntity<ApiResponse<ThongBaoResponse>> danhDauDaDoc(@PathVariable Long maThongBao) {
         Long maNguoiDung = xacThucService.layMaNguoiDungHienTai();
-        return ResponseEntity.ok(ApiResponse.of(true, "Danh dau thong bao da doc thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Đánh dấu thông báo đã đọc thành công", LocalDateTime.now(),
                 thongBaoService.danhDauDaDoc(maNguoiDung, maThongBao)));
     }
 
@@ -57,7 +57,7 @@ public class ThongBaoController {
     public ResponseEntity<ApiResponse<Void>> danhDauTatCaDaDoc() {
         Long maNguoiDung = xacThucService.layMaNguoiDungHienTai();
         thongBaoService.danhDauTatCaDaDoc(maNguoiDung);
-        return ResponseEntity.ok(ApiResponse.of(true, "Danh dau tat ca thong bao da doc thanh cong",
+        return ResponseEntity.ok(ApiResponse.of(true, "Đánh dấu tất cả thông báo đã đọc thành công",
                 LocalDateTime.now(), null));
     }
 

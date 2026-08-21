@@ -172,7 +172,8 @@ public class DonHangService {
         }
         BigDecimal donToiThieu = maGiamGia.getDonToiThieu() == null ? BigDecimal.ZERO : maGiamGia.getDonToiThieu();
         if (tongTien.compareTo(donToiThieu) < 0) {
-            throw new HethongLoiException("Đơn hàng chưa đạt giá trị tối thiểu để áp dụng mã giảm giá");
+            throw new HethongLoiException(
+                    "Đơn hàng phải có tổng tiền tối thiểu là " + donToiThieu + " để áp dụng mã giảm giá");
         }
 
         BigDecimal soTienGiam;
@@ -275,8 +276,8 @@ public class DonHangService {
         donHangRepository.save(donHang);
         thongBaoService.guiChoNguoiDung(
                 donHang.getNguoiDung(),
-                "Cap nhat trang thai don hang",
-                "Don hang #" + donHang.getMaDonHang() + " da duoc cap nhat sang trang thai " + newStatus.name(),
+                "Cập nhật trạng thái đơn hàng",
+                "Đơn hàng #" + donHang.getMaDonHang() + " đã được cập nhật sang trạng thái " + newStatus.name(),
                 LoaiThongBao.DON_HANG,
                 "/don-hang/" + donHang.getMaDonHang());
         return toResponse(donHang);
@@ -284,13 +285,13 @@ public class DonHangService {
 
     public DonHangResponse huyDonHang(Long maNguoiDung, Long maDonHang) {
         DonHang donHang = donHangRepository.findById(maDonHang)
-                .orElseThrow(() -> new KhongCoDuLieuException("Khong tim thay don hang", maDonHang));
+                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy đơn hàng", maDonHang));
         if (!donHang.getNguoiDung().getMaNguoiDung().equals(maNguoiDung)) {
-            throw new HethongLoiException("Ban khong co quyen huy don hang nay");
+            throw new HethongLoiException("Bạn không có quyền hủy đơn hàng này");
         }
         if (donHang.getTrangThai() != TrangThaiDonHang.CHO_XU_LY
                 && donHang.getTrangThai() != TrangThaiDonHang.DA_XAC_NHAN) {
-            throw new HethongLoiException("Chi co the huy don hang cho xu ly hoac da xac nhan");
+            throw new HethongLoiException("Chỉ có thể hủy đơn hàng chờ xử lý hoặc đã xác nhận");
         }
 
         for (ChiTietDonHang chiTiet : donHang.getChiTietDonHangs()) {
@@ -308,8 +309,8 @@ public class DonHangService {
         donHangRepository.save(donHang);
         thongBaoService.guiChoNguoiDung(
                 donHang.getNguoiDung(),
-                "Huy don hang thanh cong",
-                "Don hang #" + donHang.getMaDonHang() + " da duoc huy",
+                "Hủy đơn hàng thành công",
+                "Đơn hàng #" + donHang.getMaDonHang() + " đã được hủy",
                 LoaiThongBao.DON_HANG,
                 "/don-hang/" + donHang.getMaDonHang());
         return toResponse(donHang);
@@ -339,8 +340,8 @@ public class DonHangService {
         donHangRepository.save(donHang);
         thongBaoService.guiChoNguoiDung(
                 donHang.getNguoiDung(),
-                "Thanh toan thanh cong",
-                "Don hang #" + donHang.getMaDonHang() + " da duoc thanh toan thanh cong",
+                "Thanh toán thành công",
+                "Đơn hàng #" + donHang.getMaDonHang() + " đã được thanh toán thành công",
                 LoaiThongBao.DON_HANG,
                 "/don-hang/" + donHang.getMaDonHang());
         return toResponse(donHang);

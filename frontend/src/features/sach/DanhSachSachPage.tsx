@@ -95,7 +95,7 @@ export function DanhSachSachPage() {
       <section>
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-[#c4c6cd] pb-5">
           <div>
-            <p className="archival-label text-[#7d562d]">Kho danh mục</p>
+            
             <h2 className="font-serif-display mt-1 text-4xl font-bold text-[#03192e]">Thư viện sách</h2>
             <p className="mt-1 text-sm text-[#43474d]">{data?.tongSoPhanTu ?? 0} kết quả được tìm thấy</p>
           </div>

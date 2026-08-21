@@ -47,7 +47,6 @@ export function YeuThichPage() {
     <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10">
       <div className="mb-8 border-b border-[#c4c6cd] pb-5">
         <div>
-          <p className="archival-label text-[#7d562d]">Kệ sách cá nhân</p>
           <h1 className="font-serif-display mt-1 text-4xl font-bold text-[#03192e]">Danh sách yêu thích</h1>
           <p className="mt-1 text-sm text-[#43474d]">{data?.tongSoPhanTu ?? 0} tựa sách đã lưu</p>
         </div>

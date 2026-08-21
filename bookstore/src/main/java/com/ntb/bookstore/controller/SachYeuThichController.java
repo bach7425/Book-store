@@ -33,7 +33,7 @@ public class SachYeuThichController {
     @PreAuthorize("hasAnyAuthority('ROLE_NGUOI_DUNG')")
     public ResponseEntity<ApiResponse<SachResponse>> themSachYeuThich(@PathVariable Long maSach) {
         Long maNguoiDung = xacThucService.layMaNguoiDungHienTai();
-        return ResponseEntity.ok(ApiResponse.of(true, "Them sach yeu thich thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Thêm sách yêu thích thành công", LocalDateTime.now(),
                 sachYeuThichService.themSachYeuThich(maNguoiDung, maSach)));
     }
 
@@ -44,7 +44,7 @@ public class SachYeuThichController {
             @RequestParam(defaultValue = "10") int size) {
         Long maNguoiDung = xacThucService.layMaNguoiDungHienTai();
         String baseUrl = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
-        return ResponseEntity.ok(ApiResponse.of(true, "Lay danh sach sach yeu thich thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Lấy danh sách sách yêu thích thành công", LocalDateTime.now(),
                 sachYeuThichService.danhSachSachYeuThich(maNguoiDung, page, size, baseUrl)));
     }
 
@@ -53,6 +53,6 @@ public class SachYeuThichController {
     public ResponseEntity<ApiResponse<Void>> xoaSachYeuThich(@PathVariable Long maSach) {
         Long maNguoiDung = xacThucService.layMaNguoiDungHienTai();
         sachYeuThichService.xoaSachYeuThich(maNguoiDung, maSach);
-        return ResponseEntity.ok(ApiResponse.of(true, "Xoa sach yeu thich thanh cong", LocalDateTime.now(), null));
+        return ResponseEntity.ok(ApiResponse.of(true, "Xóa sách yêu thích thành công", LocalDateTime.now(), null));
     }
 }

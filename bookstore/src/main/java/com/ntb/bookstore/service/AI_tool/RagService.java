@@ -1,4 +1,4 @@
-package com.ntb.bookstore.service;
+package com.ntb.bookstore.service.AI_tool;
 
 import java.util.List;
 import java.util.Map;

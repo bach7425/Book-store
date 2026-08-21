@@ -36,14 +36,14 @@ public class QuanTriDonHangController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         String baseUrl = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
-        return ResponseEntity.ok(ApiResponse.of(true, "Lay danh sach don hang quan tri thanh cong",
+        return ResponseEntity.ok(ApiResponse.of(true, "Lấy danh sách đơn hàng quản trị thành công",
                 LocalDateTime.now(), donHangService.danhSachDonHangQuanTri(trangThai, page, size, baseUrl)));
     }
 
     @PutMapping("/don-hang/{maDonHang}/trang-thai")
     public ResponseEntity<ApiResponse<DonHangResponse>> capNhatTrangThai(@PathVariable Long maDonHang,
             @RequestBody CapNhatTrangThaiDonHangRequest request) {
-        return ResponseEntity.ok(ApiResponse.of(true, "Cap nhat trang thai don hang thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Cập nhật trạng thái đơn hàng thành công", LocalDateTime.now(),
                 donHangService.capNhatTrangThaiDonHang(maDonHang, TrangThaiDonHang.valueOf(request.getTrangThai()))));
     }
 }

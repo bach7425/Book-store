@@ -30,21 +30,21 @@ public class QuanTriTacGiaController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<TacGiaResponse>> themTacGia(@RequestBody ThemTacGiaRequest request) {
-        return ResponseEntity.ok(ApiResponse.of(true, "Them tac gia thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Thêm tác giả thành công", LocalDateTime.now(),
                 sachService.themTacGia(request.getTen(), request.getTieuSu(), request.getAnhDaiDien())));
     }
 
     @PutMapping("/{maTacGia}")
     public ResponseEntity<ApiResponse<TacGiaResponse>> capNhatTacGia(@PathVariable Long maTacGia,
             @RequestBody ThemTacGiaRequest request) {
-        return ResponseEntity.ok(ApiResponse.of(true, "Cap nhat tac gia thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Cập nhật tác giả thành công", LocalDateTime.now(),
                 sachService.capNhatTacGia(maTacGia, request.getTen(), request.getTieuSu(), request.getAnhDaiDien())));
     }
 
     @PostMapping("/{maTacGia}/anh-dai-dien")
     public ResponseEntity<ApiResponse<TacGiaResponse>> capNhatAnhDaiDienTacGia(@PathVariable Long maTacGia,
             @RequestParam("file") MultipartFile file) {
-        return ResponseEntity.ok(ApiResponse.of(true, "Cap nhat anh dai dien tac gia thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Cập nhật ảnh đại diện tác giả thành công", LocalDateTime.now(),
                 sachService.capNhatAnhDaiDienTacGia(maTacGia, file)));
     }
 }

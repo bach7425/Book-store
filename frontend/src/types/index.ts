@@ -208,3 +208,16 @@ export interface GuiThongBaoRequest {
   loai?: string;
   duongDan?: string;
 }
+
+export interface ChatRequest {
+  cauHoi: string;
+  isSearchWeb: boolean;
+}
+
+export interface TinNhanChat {
+  id: string;
+  vaiTro: 'nguoi-dung' | 'tro-ly';
+  noiDung: string;
+  thoiGian: string;
+  trangThai?: 'dang-gui' | 'loi';
+}

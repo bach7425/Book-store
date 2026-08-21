@@ -32,7 +32,7 @@ public class QuanTriBaoCaoController {
     public ResponseEntity<ApiResponse<BaoCaoDoanhThuResponse>> baoCaoDoanhThu(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tuNgay,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate denNgay) {
-        return ResponseEntity.ok(ApiResponse.of(true, "Lay bao cao doanh thu thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Lấy báo cáo doanh thu thành công", LocalDateTime.now(),
                 baoCaoService.baoCaoDoanhThu(tuNgay, denNgay)));
     }
 
@@ -43,7 +43,7 @@ public class QuanTriBaoCaoController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         String baseUrl = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
-        return ResponseEntity.ok(ApiResponse.of(true, "Lay thong ke sach ban chay thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Lấy thống kê sách bán chạy thành công", LocalDateTime.now(),
                 baoCaoService.thongKeSachBanChay(tuNgay, denNgay, page, size, baseUrl)));
     }
 }

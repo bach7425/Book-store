@@ -35,7 +35,7 @@ public class QuanTriDanhGiaController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         String baseUrl = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
-        return ResponseEntity.ok(ApiResponse.of(true, "Lay danh sach danh gia quan tri thanh cong",
+        return ResponseEntity.ok(ApiResponse.of(true, "Lấy danh sách đánh giá quản trị thành công",
                 LocalDateTime.now(), danhGiaService.danhSachDanhGiaQuanTri(trangThai, page, size, baseUrl)));
     }
 
@@ -43,7 +43,7 @@ public class QuanTriDanhGiaController {
     public ResponseEntity<ApiResponse<DanhGiaResponse>> duyetDanhGia(@PathVariable Long maDanhGia,
             @RequestBody(required = false) XuLyDanhGiaRequest request) {
         String phanHoi = request == null ? null : request.getPhanHoi();
-        return ResponseEntity.ok(ApiResponse.of(true, "Duyet danh gia thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Duyệt đánh giá thành công", LocalDateTime.now(),
                 danhGiaService.duyetDanhGia(maDanhGia, phanHoi)));
     }
 
@@ -51,7 +51,7 @@ public class QuanTriDanhGiaController {
     public ResponseEntity<ApiResponse<DanhGiaResponse>> tuChoiDanhGia(@PathVariable Long maDanhGia,
             @RequestBody(required = false) XuLyDanhGiaRequest request) {
         String phanHoi = request == null ? null : request.getPhanHoi();
-        return ResponseEntity.ok(ApiResponse.of(true, "Tu choi danh gia thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Từ chối đánh giá thành công", LocalDateTime.now(),
                 danhGiaService.tuChoiDanhGia(maDanhGia, phanHoi)));
     }
 }

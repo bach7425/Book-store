@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CapNhatProfileRequest {
     private String hoVaTen;
+    private String email;
     private String soDienThoai;
 }

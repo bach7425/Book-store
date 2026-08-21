@@ -23,7 +23,7 @@ public class TheLoaiController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<TheLoaiResponse>>> danhSachTheLoai() {
-        return ResponseEntity.ok(ApiResponse.of(true, "Lay danh sach the loai thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Lấy danh sách thể loại thành công", LocalDateTime.now(),
                 sachService.danhSachTheLoai()));
     }
 }

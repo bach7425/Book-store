@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { nguoiDungApi } from '../api/nguoiDungApi';
+import { ChatBoxWidget } from '../components/ChatBoxWidget';
 import { ThongBaoChuong } from '../components/ThongBaoChuong';
 import { AvatarNguoiDung } from '../components/ui/AvatarNguoiDung';
 import { Button } from '../components/ui/Button';
@@ -38,42 +39,44 @@ export function PublicLayout() {
   return (
     <div className="min-h-screen text-[#1b1c1c]">
       <header className="sticky top-0 z-40 border-b border-[#c4c6cd]/80 bg-[#fbf9f8]/92 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between px-4 md:px-10">
-          <Link to="/" className="flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded bg-[#03192e] text-white shadow-[0_10px_22px_rgba(3,25,46,0.18)]">
-              <BookOpen size={22} />
-            </span>
-            <span>
-              <span className="font-serif-display block text-xl font-bold leading-none text-[#03192e]">Book Store</span>
-              <span className="archival-label text-[#7d562d]">Nhà sách </span>
-            </span>
-          </Link>
+        <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between gap-6 px-4 md:px-10">
+          <div className="flex min-w-0 items-center gap-8">
+            <Link to="/" className="flex shrink-0 items-center gap-3">
+              <span className="grid h-10 w-10 place-items-center rounded bg-[#03192e] text-white shadow-[0_10px_22px_rgba(3,25,46,0.18)]">
+                <BookOpen size={22} />
+              </span>
+              <span>
+                <span className="font-serif-display block text-xl font-bold leading-none text-[#03192e]">Book Store</span>
+                <span className="archival-label text-[#7d562d]">Nhà sách </span>
+              </span>
+            </Link>
 
-          <nav className="hidden items-center gap-7 md:flex">
-            {nav.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) =>
-                  `archival-label transition ${isActive ? 'text-[#03192e]' : 'text-[#43474d] hover:text-[#7d562d]'}`
-                }
-              >
-                {item.label}
-              </NavLink>
-            ))}
-            {vaiTro === 'ROLE_QUAN_TRI_VIEN' ? (
-              <NavLink to="/quan-tri" className="archival-label text-[#43474d] hover:text-[#7d562d]">
-                Quản trị
-              </NavLink>
-            ) : null}
-            {laNguoiDungMuaHang ? (
-              <NavLink to="/don-hang" className="archival-label text-[#43474d] hover:text-[#7d562d]">
-                Đơn hàng
-              </NavLink>
-            ) : null}
-          </nav>
+            <nav className="hidden items-center gap-7 md:flex">
+              {nav.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) =>
+                    `archival-label transition ${isActive ? 'text-[#03192e]' : 'text-[#43474d] hover:text-[#7d562d]'}`
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              ))}
+              {vaiTro === 'ROLE_QUAN_TRI_VIEN' ? (
+                <NavLink to="/quan-tri" className="archival-label text-[#43474d] hover:text-[#7d562d]">
+                  Quản trị
+                </NavLink>
+              ) : null}
+              {laNguoiDungMuaHang ? (
+                <NavLink to="/don-hang" className="archival-label text-[#43474d] hover:text-[#7d562d]">
+                  Đơn hàng
+                </NavLink>
+              ) : null}
+            </nav>
+          </div>
 
-          <div className="hidden items-center gap-2 md:flex">
+          <div className="hidden shrink-0 items-center gap-2 md:flex">
             {laNguoiDungMuaHang ? (
               <>
                 <button onClick={() => navigate('/yeu-thich')} className="rounded-full p-2 text-[#43474d] hover:bg-[#efeded] hover:text-[#7d562d]" aria-label="Yêu thích">
@@ -129,6 +132,7 @@ export function PublicLayout() {
       <main>
         <Outlet />
       </main>
+      <ChatBoxWidget />
     </div>
   );
 }

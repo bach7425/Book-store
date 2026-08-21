@@ -33,7 +33,7 @@ public class QuanTriSachController {
 
         @PostMapping
         public ResponseEntity<ApiResponse<SachResponse>> themSach(@RequestBody @Valid ThemSachRequest request) {
-                return ResponseEntity.ok(ApiResponse.of(true, "Them sach thanh cong", LocalDateTime.now(),
+                return ResponseEntity.ok(ApiResponse.of(true, "Thêm sách thành công", LocalDateTime.now(),
                                 sachService.themSach(request.getTenSach(), request.getMoTa(), request.getGia(),
                                                 request.getNhaXuatBan(), request.getMaTacGia(), request.getMaTheLoai(),
                                                 request.getSoLuongTon())));
@@ -42,7 +42,7 @@ public class QuanTriSachController {
         @PutMapping("/{maSach}")
         public ResponseEntity<ApiResponse<SachResponse>> capNhatSach(@PathVariable Long maSach,
                         @RequestBody @Valid CapNhatSachRequest request) {
-                return ResponseEntity.ok(ApiResponse.of(true, "Cap nhat sach thanh cong", LocalDateTime.now(),
+                return ResponseEntity.ok(ApiResponse.of(true, "Cập nhật sách thành công", LocalDateTime.now(),
                                 sachService.capNhatSach(maSach, request.getTenSach(), request.getMoTa(),
                                                 request.getGia(),
                                                 request.getNhaXuatBan(), request.getMaTacGia(),
@@ -53,14 +53,14 @@ public class QuanTriSachController {
         @PutMapping("/{maSach}/ton-kho")
         public ResponseEntity<ApiResponse<SachResponse>> capNhatTonKho(@PathVariable Long maSach,
                         @RequestBody @Valid CapNhatTonKhoRequest request) {
-                return ResponseEntity.ok(ApiResponse.of(true, "Cap nhat ton kho thanh cong", LocalDateTime.now(),
+                return ResponseEntity.ok(ApiResponse.of(true, "Cập nhật tồn kho thành công", LocalDateTime.now(),
                                 sachService.capNhatTonKho(maSach, request.getSoLuong())));
         }
 
         @PostMapping("/{maSach}/anh-bia")
         public ResponseEntity<ApiResponse<SachResponse>> capNhatAnhBia(@PathVariable Long maSach,
                         @RequestParam("file") MultipartFile file) {
-                return ResponseEntity.ok(ApiResponse.of(true, "Cap nhat anh bia thanh cong", LocalDateTime.now(),
+                return ResponseEntity.ok(ApiResponse.of(true, "Cập nhật ảnh bìa thành công", LocalDateTime.now(),
                                 sachService.capNhatAnhBia(maSach, file)));
         }
 }

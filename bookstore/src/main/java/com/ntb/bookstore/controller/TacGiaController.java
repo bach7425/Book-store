@@ -29,7 +29,7 @@ public class TacGiaController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         String baseUrl = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
-        return ResponseEntity.ok(ApiResponse.of(true, "Lay danh sach tac gia thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Lấy danh sách tác giả thành công", LocalDateTime.now(),
                 sachService.danhSachTacGia(sort, page, size, baseUrl)));
     }
 }

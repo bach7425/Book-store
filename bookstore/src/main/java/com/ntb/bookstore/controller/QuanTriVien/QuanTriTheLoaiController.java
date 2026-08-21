@@ -28,14 +28,14 @@ public class QuanTriTheLoaiController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<TheLoaiResponse>> themTheLoai(@RequestBody ThemTheLoaiRequest request) {
-        return ResponseEntity.ok(ApiResponse.of(true, "Them the loai thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Thêm thể loại thành công", LocalDateTime.now(),
                 sachService.themTheLoai(request.getTen(), request.getMoTa())));
     }
 
     @PutMapping("/{maTheLoai}")
     public ResponseEntity<ApiResponse<TheLoaiResponse>> capNhatTheLoai(@PathVariable Long maTheLoai,
             @RequestBody ThemTheLoaiRequest request) {
-        return ResponseEntity.ok(ApiResponse.of(true, "Cap nhat the loai thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Cập nhật thể loại thành công", LocalDateTime.now(),
                 sachService.capNhatTheLoai(maTheLoai, request.getTen(), request.getMoTa())));
     }
 }

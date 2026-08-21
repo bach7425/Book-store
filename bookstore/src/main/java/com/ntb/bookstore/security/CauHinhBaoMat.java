@@ -47,7 +47,7 @@ public class CauHinhBaoMat {
                         .accessDeniedHandler(new JwtXuLyTuchoiTruyCap()))
                 .authorizeHttpRequests(xacThuc -> xacThuc
                         .requestMatchers("/api/xac-thuc/**", "/api/sach/**", "/api/the-loai/**", "/api/tac-gia/**",
-                                "/uploads/**", "/api/ai/**")
+                                "/uploads/**", "/api/ai/**", "/api/test/**")
                         .permitAll()
                         .requestMatchers("/api/nguoi-dung/**", "/api/quan-tri/**", "/api/gio-hang/**",
                                 "/api/don-hang/**", "/api/danh-gia/**", "/api/sach-yeu-thich/**",

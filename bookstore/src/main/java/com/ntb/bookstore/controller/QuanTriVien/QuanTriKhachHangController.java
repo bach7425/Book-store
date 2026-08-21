@@ -33,13 +33,13 @@ public class QuanTriKhachHangController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         String baseUrl = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
-        return ResponseEntity.ok(ApiResponse.of(true, "Lay danh sach khach hang thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Lấy danh sách khách hàng thành công", LocalDateTime.now(),
                 quanTriKhachHangService.danhSachKhachHang(tuKhoa, page, size, baseUrl)));
     }
 
     @GetMapping("/{maNguoiDung}")
     public ResponseEntity<ApiResponse<KhachHangResponse>> chiTietKhachHang(@PathVariable Long maNguoiDung) {
-        return ResponseEntity.ok(ApiResponse.of(true, "Lay chi tiet khach hang thanh cong", LocalDateTime.now(),
+        return ResponseEntity.ok(ApiResponse.of(true, "Lấy chi tiết khách hàng thành công", LocalDateTime.now(),
                 quanTriKhachHangService.chiTietKhachHang(maNguoiDung)));
     }
 
@@ -50,7 +50,7 @@ public class QuanTriKhachHangController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         String baseUrl = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
-        return ResponseEntity.ok(ApiResponse.of(true, "Lay danh sach don hang cua khach hang thanh cong",
+        return ResponseEntity.ok(ApiResponse.of(true, "Lấy danh sách đơn hàng của khách hàng thành công",
                 LocalDateTime.now(),
                 quanTriKhachHangService.danhSachDonHangTheoKhach(maNguoiDung, trangThai, page, size, baseUrl)));
     }

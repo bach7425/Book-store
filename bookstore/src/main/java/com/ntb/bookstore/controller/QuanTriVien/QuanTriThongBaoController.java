@@ -28,6 +28,6 @@ public class QuanTriThongBaoController {
     public ResponseEntity<ApiResponse<Void>> guiThongBaoQuanTri(@RequestBody @Valid GuiThongBaoRequest request) {
         thongBaoService.guiThongBaoQuanTri(request.getMaNguoiDung(), request.isGuiTatCa(), request.getTieuDe(),
                 request.getNoiDung(), request.getLoai(), request.getDuongDan());
-        return ResponseEntity.ok(ApiResponse.of(true, "Gui thong bao thanh cong", LocalDateTime.now(), null));
+        return ResponseEntity.ok(ApiResponse.of(true, "Gửi thông báo thành công", LocalDateTime.now(), null));
     }
 }

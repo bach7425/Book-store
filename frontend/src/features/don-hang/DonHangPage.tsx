@@ -38,9 +38,11 @@ export function DonHangPage() {
   const dangThaoTac = huy.isPending || thanhToan.isPending;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <p className="archival-label text-[#7d562d]">Lịch sử mua hàng</p>
-      <h1 className="font-serif-display mt-1 text-4xl font-bold text-[#03192e]">Đơn hàng của tôi</h1>
+    <div className="mx-auto max-w-7xl px-4 py-10 md:px-10">
+      <div className="mb-8 border-b border-[#c4c6cd] pb-5">
+        <h1 className="font-serif-display mt-1 text-4xl font-bold text-[#03192e]">Đơn hàng của tôi</h1>
+        <p className="mt-1 text-sm text-[#43474d]">{data?.tongSoPhanTu ?? 0} đơn hàng</p>
+      </div>
       {isLoading ? (
         <p className="mt-4 text-stone-500">Đang tải đơn hàng...</p>
       ) : error ? (
@@ -48,7 +50,7 @@ export function DonHangPage() {
       ) : (data?.duLieu.length ?? 0) === 0 ? (
         <OTrong tieuDe="Chưa có đơn hàng" />
       ) : (
-        <div className="mt-5">
+        <div>
           <Bang>
             <table className="w-full min-w-[860px] text-left text-sm">
               <thead className="du-lieu-heading">

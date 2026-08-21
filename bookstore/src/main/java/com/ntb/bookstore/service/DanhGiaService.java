@@ -36,12 +36,12 @@ public class DanhGiaService {
         public PageResponse<DanhGiaResponse> layDanhGiaSach(Long maSach, Long maNguoiDung,
                         int page, int size, String baseUrl) {
                 Sach sach = sachRepository.findById(maSach)
-                                .orElseThrow(() -> new KhongCoDuLieuException("Khong tim thay sach", maSach));
+                                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy sách", maSach));
                 Pageable pageable = PageRequest.of(page, size);
                 Page<DanhGia> danhGiaPage;
                 if (maNguoiDung != null) {
                         NguoiDung nguoiDung = nguoiDungRepository.findById(maNguoiDung)
-                                        .orElseThrow(() -> new KhongCoDuLieuException("Khong tim thay nguoi dung",
+                                        .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy người dùng",
                                                         maNguoiDung));
                         if (nguoiDung.getVaiTro().equals(VaiTro.QUAN_TRI_VIEN)) {
                                 danhGiaPage = danhGiaRepository.findBySach(sach, pageable);
@@ -67,7 +67,7 @@ public class DanhGiaService {
                                 TrangThaiDanhGia trangThaiDanhGia = TrangThaiDanhGia.valueOf(trangThai.toUpperCase());
                                 danhGiaPage = danhGiaRepository.findByTrangThai(trangThaiDanhGia, pageable);
                         } catch (IllegalArgumentException e) {
-                                throw new HethongLoiException("Trang thai danh gia khong hop le: " + trangThai);
+                                throw new HethongLoiException("Trạng thái đánh giá không hợp lệ: " + trangThai);
                         }
                 }
                 return new PageResponse<>(danhGiaPage.map(this::toResponse), baseUrl);
@@ -76,20 +76,20 @@ public class DanhGiaService {
         public DanhGiaResponse themDanhGia(Long maNguoiDung, Long maSach, Integer soSao, String noiDung) {
                 kiemTraSoSao(soSao);
                 NguoiDung nguoiDung = nguoiDungRepository.findById(maNguoiDung)
-                                .orElseThrow(() -> new KhongCoDuLieuException("Khong tim thay nguoi dung",
+                                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy người dùng",
                                                 maNguoiDung));
                 Sach sach = sachRepository.findById(maSach)
-                                .orElseThrow(() -> new KhongCoDuLieuException("Khong tim thay sach", maSach));
+                                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy sách", maSach));
 
                 boolean daMua = donHangRepository.findByNguoiDung(nguoiDung).stream()
                                 .flatMap(donHang -> donHang.getChiTietDonHangs().stream())
                                 .anyMatch(chiTiet -> chiTiet.getSach().getMaSach().equals(maSach));
                 if (!daMua) {
-                        throw new HethongLoiException("Chi nguoi dung da mua sach moi duoc danh gia");
+                        throw new HethongLoiException("Chỉ người dùng đã mua sách mới được đánh giá");
                 }
 
                 if (danhGiaRepository.findByNguoiDungAndSach(nguoiDung, sach).isPresent()) {
-                        throw new HethongLoiException("Ban da danh gia sach nay roi");
+                        throw new HethongLoiException("Bạn đã đánh giá sách này rồi");
                 }
 
                 DanhGia danhGia = DanhGia.builder()
@@ -102,8 +102,8 @@ public class DanhGiaService {
                                 .build();
                 danhGia = danhGiaRepository.save(danhGia);
                 thongBaoService.guiChoTatCaQuanTriVien(
-                                "Co danh gia cho duyet",
-                                "Sach " + sach.getTenSach() + " co danh gia moi can duyet",
+                                "Có đánh giá chờ duyệt",
+                                "Sách " + sach.getTenSach() + " có đánh giá mới cần duyệt",
                                 LoaiThongBao.DANH_GIA,
                                 "/quan-tri/danh-gia");
                 return toResponse(danhGia);
@@ -113,7 +113,7 @@ public class DanhGiaService {
                 kiemTraSoSao(soSao);
                 DanhGia danhGia = layDanhGia(maDanhGia);
                 NguoiDung nguoiDung = nguoiDungRepository.findById(maNguoiDung)
-                                .orElseThrow(() -> new KhongCoDuLieuException("Khong tim thay nguoi dung",
+                                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy người dùng",
                                                 maNguoiDung));
                 if (danhGia.getNguoiDung().equals(nguoiDung)) {
                         danhGia.setSoSao(soSao);
@@ -122,14 +122,14 @@ public class DanhGiaService {
                         danhGia.setPhanHoi(null);
                         DanhGia daLuu = danhGiaRepository.save(danhGia);
                         thongBaoService.guiChoTatCaQuanTriVien(
-                                        "Co danh gia gui lai",
-                                        "Danh gia sach " + danhGia.getSach().getTenSach()
-                                                        + " da duoc gui lai va can duyet",
+                                        "Có đánh giá gửi lại",
+                                        "Đánh giá sách " + danhGia.getSach().getTenSach()
+                                                        + " đã được gửi lại và cần duyệt",
                                         LoaiThongBao.DANH_GIA,
                                         "/quan-tri/danh-gia");
                         return toResponse(daLuu);
                 } else {
-                        throw new HethongLoiException("Ban khong co quyen cap nhat danh gia nay");
+                        throw new HethongLoiException("Bạn không có quyền cập nhật đánh giá này");
                 }
 
         }
@@ -137,12 +137,12 @@ public class DanhGiaService {
         public void xoaDanhGia(Long maNguoiDung, Long maDanhGia) {
                 DanhGia danhGia = layDanhGia(maDanhGia);
                 NguoiDung nguoiDung = nguoiDungRepository.findById(maNguoiDung)
-                                .orElseThrow(() -> new KhongCoDuLieuException("Khong tim thay nguoi dung",
+                                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy người dùng",
                                                 maNguoiDung));
                 if (danhGia.getNguoiDung().equals(nguoiDung) || nguoiDung.getVaiTro().equals(VaiTro.QUAN_TRI_VIEN)) {
                         danhGiaRepository.delete(danhGia);
                 } else {
-                        throw new HethongLoiException("Ban khong co quyen xoa danh gia nay");
+                        throw new HethongLoiException("Bạn không có quyền xóa đánh giá này");
                 }
         }
 
@@ -159,14 +159,14 @@ public class DanhGiaService {
                 danhGia.setTrangThai(trangThai);
                 danhGia.setPhanHoi(phanHoi);
                 danhGia = danhGiaRepository.save(danhGia);
-                String hanhDong = trangThai == TrangThaiDanhGia.DA_DUYET ? "duoc duyet" : "bi tu choi";
-                String noiDung = "Danh gia cua ban cho sach " + danhGia.getSach().getTenSach() + " da " + hanhDong;
+                String hanhDong = trangThai == TrangThaiDanhGia.DA_DUYET ? "được duyệt" : "bị từ chối";
+                String noiDung = "Đánh giá của bạn cho sách " + danhGia.getSach().getTenSach() + " đã " + hanhDong;
                 if (phanHoi != null && !phanHoi.isBlank()) {
-                        noiDung = noiDung + ". Phan hoi: " + phanHoi;
+                        noiDung = noiDung + ". Phản hồi: " + phanHoi;
                 }
                 thongBaoService.guiChoNguoiDung(
                                 danhGia.getNguoiDung(),
-                                "Cap nhat danh gia",
+                                "Cập nhật đánh giá",
                                 noiDung,
                                 LoaiThongBao.DANH_GIA,
                                 "/danh-gia/" + danhGia.getMaDanhGia());
@@ -175,12 +175,12 @@ public class DanhGiaService {
 
         private DanhGia layDanhGia(Long maDanhGia) {
                 return danhGiaRepository.findById(maDanhGia)
-                                .orElseThrow(() -> new KhongCoDuLieuException("Khong tim thay danh gia", maDanhGia));
+                                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy đánh giá", maDanhGia));
         }
 
         private void kiemTraSoSao(Integer soSao) {
                 if (soSao == null || soSao < 1 || soSao > 5) {
-                        throw new HethongLoiException("So sao phai nam trong khoang 1 den 5");
+                        throw new HethongLoiException("Số sao phải nằm trong khoảng 1 đến 5");
                 }
         }
 

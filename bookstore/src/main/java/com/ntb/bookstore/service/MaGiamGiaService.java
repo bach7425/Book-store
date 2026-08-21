@@ -133,30 +133,30 @@ public class MaGiamGiaService {
 
     private LoaiGiamGia kiemTraLoaiGiam(String loaiGiam) {
         if (loaiGiam == null || loaiGiam.isBlank()) {
-            throw new HethongLoiException("Loai giam gia khong duoc de trong");
+            throw new HethongLoiException("Loại giảm giá không được để trống");
         }
         try {
             return LoaiGiamGia.valueOf(loaiGiam.trim().toUpperCase());
         } catch (IllegalArgumentException ex) {
-            throw new HethongLoiException("Loai giam gia khong hop le: " + loaiGiam);
+            throw new HethongLoiException("Loại giảm giá không hợp lệ: " + loaiGiam);
         }
     }
 
     private TrangThaiMaGiamGia kiemTraTrangThai(String trangThai) {
         if (trangThai == null || trangThai.isBlank()) {
-            throw new HethongLoiException("Trang thai ma giam gia khong duoc de trong");
+            throw new HethongLoiException("Trạng thái mã giảm giá không được để trống");
         }
         try {
             return TrangThaiMaGiamGia.valueOf(trangThai.trim().toUpperCase());
         } catch (IllegalArgumentException ex) {
-            throw new HethongLoiException("Trang thai ma giam gia khong hop le: " + trangThai);
+            throw new HethongLoiException("Trạng thái mã giảm giá không hợp lệ: " + trangThai);
         }
     }
 
     private TrangThaiMaGiamGia kiemTraTrangThaiQuanTri(String trangThai) {
         TrangThaiMaGiamGia trangThaiHopLe = kiemTraTrangThai(trangThai);
         if (trangThaiHopLe == TrangThaiMaGiamGia.HET_HAN) {
-            throw new HethongLoiException("Trang thai het han chi duoc he thong tu cap nhat");
+            throw new HethongLoiException("Trạng thái hết hạn chỉ được hệ thống tự cập nhật");
         }
         return trangThaiHopLe;
     }
@@ -174,22 +174,22 @@ public class MaGiamGiaService {
 
     private void kiemTraMaGiamGia(MaGiamGia maGiamGia) {
         if (maGiamGia.getGiaTri() == null || maGiamGia.getGiaTri().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new HethongLoiException("Gia tri giam gia phai lon hon 0");
+            throw new HethongLoiException("Giá trị giảm giá phải lớn hơn 0");
         }
         if (maGiamGia.getGiamToiDa() != null && maGiamGia.getGiamToiDa().compareTo(BigDecimal.ZERO) < 0) {
-            throw new HethongLoiException("Giam toi da khong duoc am");
+            throw new HethongLoiException("Giảm tối đa không được âm");
         }
         if (maGiamGia.getDonToiThieu() != null && maGiamGia.getDonToiThieu().compareTo(BigDecimal.ZERO) < 0) {
-            throw new HethongLoiException("Don toi thieu khong duoc am");
+            throw new HethongLoiException("Đơn tối thiểu không được âm");
         }
         if (maGiamGia.getSoLuong() == null || maGiamGia.getSoLuong() < 0) {
-            throw new HethongLoiException("So luong ma giam gia khong duoc am");
+            throw new HethongLoiException("Số lượng mã giảm giá không được âm");
         }
         if (maGiamGia.getNgayBatDau() == null || maGiamGia.getNgayKetThuc() == null) {
-            throw new HethongLoiException("Ngay bat dau va ngay ket thuc la bat buoc");
+            throw new HethongLoiException("Ngày bắt đầu và ngày kết thúc là bắt buộc");
         }
         if (!maGiamGia.getNgayKetThuc().isAfter(maGiamGia.getNgayBatDau())) {
-            throw new HethongLoiException("Ngay ket thuc phai sau ngay bat dau");
+            throw new HethongLoiException("Ngày kết thúc phải sau ngày bắt đầu");
         }
     }
 
