@@ -1,13 +1,15 @@
-import { useMutation } from '@tanstack/react-query';
-import { Send } from 'lucide-react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { CheckCircle2, Search, Send, UserRound } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { quanTriApi } from '../../api/quanTriApi';
 import { thongBaoApi } from '../../api/thongBaoApi';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { useToastStore } from '../../components/ui/toastStore';
 import type { GuiThongBaoRequest } from '../../types';
 
-type FormThongBao = GuiThongBaoRequest & { maNguoiDungText?: string };
+type FormThongBao = Omit<GuiThongBaoRequest, 'maNguoiDung'>;
 
 const loaiThongBao = [
   { value: 'QUAN_TRI', label: 'Quản trị' },
@@ -19,30 +21,58 @@ const loaiThongBao = [
 export function QuanTriThongBaoPage() {
   const baoTin = useToastStore((state) => state.baoTin);
   const baoLoi = useToastStore((state) => state.baoLoi);
+  const [tuKhoaKhachHang, setTuKhoaKhachHang] = useState('');
+  const [maNguoiDungDaChon, setMaNguoiDungDaChon] = useState<number | null>(null);
   const { register, handleSubmit, reset, watch } = useForm<FormThongBao>({
     defaultValues: { guiTatCa: true, loai: 'QUAN_TRI' },
   });
   const guiTatCa = watch('guiTatCa');
+
+  const { data: khachHang, isLoading: dangTaiKhachHang } = useQuery({
+    queryKey: ['quan-tri', 'khach-hang', 'thong-bao', tuKhoaKhachHang],
+    queryFn: () => quanTriApi.layKhachHang({ tuKhoa: tuKhoaKhachHang || undefined, size: 6 }),
+    enabled: !guiTatCa,
+  });
+
   const guiThongBao = useMutation({
-    mutationFn: (form: FormThongBao) =>
-      thongBaoApi.guiThongBaoQuanTri({
-        guiTatCa: form.guiTatCa,
-        maNguoiDung: form.guiTatCa ? undefined : Number(form.maNguoiDungText || form.maNguoiDung),
-        tieuDe: form.tieuDe,
-        noiDung: form.noiDung,
-        loai: form.loai,
-        duongDan: form.duongDan || undefined,
-      }),
+    mutationFn: (duLieu: GuiThongBaoRequest) => thongBaoApi.guiThongBaoQuanTri(duLieu),
     onSuccess: () => {
       reset({ guiTatCa: true, loai: 'QUAN_TRI' });
+      setMaNguoiDungDaChon(null);
+      setTuKhoaKhachHang('');
       baoTin('Đã gửi thông báo');
     },
     onError: (err) => baoLoi(err.message),
   });
 
+  useEffect(() => {
+    if (guiTatCa) {
+      setMaNguoiDungDaChon(null);
+      setTuKhoaKhachHang('');
+    }
+  }, [guiTatCa]);
+
+  const guiForm = (form: FormThongBao) => {
+    if (!form.guiTatCa && !maNguoiDungDaChon) {
+      baoLoi('Vui lòng chọn khách hàng nhận thông báo');
+      return;
+    }
+
+    guiThongBao.mutate({
+      guiTatCa: form.guiTatCa,
+      maNguoiDung: form.guiTatCa ? undefined : maNguoiDungDaChon ?? undefined,
+      tieuDe: form.tieuDe,
+      noiDung: form.noiDung,
+      loai: form.loai,
+      duongDan: form.duongDan || undefined,
+    });
+  };
+
+  const danhSachKhachHang = khachHang?.duLieu ?? [];
+
   return (
     <div className="mx-auto max-w-[860px]">
-      <form onSubmit={handleSubmit((form) => guiThongBao.mutate(form))} className="paper-panel rounded p-6">
+      <form onSubmit={handleSubmit(guiForm)} className="paper-panel rounded p-6">
         <p className="archival-label text-[#7d562d]">Trung tâm thông báo</p>
         <h1 className="font-serif-display mt-1 text-3xl font-bold text-[#03192e]">Gửi thông báo</h1>
         <p className="mt-1 text-sm text-[#43474d]">Gửi thông báo cho một khách hàng hoặc toàn bộ người dùng.</p>
@@ -54,10 +84,66 @@ export function QuanTriThongBaoPage() {
           </label>
 
           {!guiTatCa ? (
-            <label className="block text-sm font-bold text-[#43474d]">
-              Mã người dùng
-              <Input className="mt-2" type="number" min={1} placeholder="Nhập mã người dùng" {...register('maNguoiDungText')} />
-            </label>
+            <div className="rounded border border-[#c4c6cd] bg-white p-4">
+              <label className="block text-sm font-bold text-[#43474d]">
+                Chọn khách hàng
+                <span className="relative mt-2 block">
+                  <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#7d562d]" size={16} />
+                  <Input
+                    className="pl-9"
+                    placeholder="Tìm theo tên, email hoặc tên đăng nhập"
+                    value={tuKhoaKhachHang}
+                    onChange={(event) => {
+                      setTuKhoaKhachHang(event.target.value);
+                      setMaNguoiDungDaChon(null);
+                    }}
+                  />
+                </span>
+              </label>
+
+              <div className="mt-3 grid gap-2">
+                {dangTaiKhachHang ? (
+                  <p className="rounded border border-dashed border-[#c4c6cd] bg-[#fbf9f8] px-3 py-3 text-sm text-[#43474d]">
+                    Đang tải danh sách khách hàng...
+                  </p>
+                ) : null}
+
+                {!dangTaiKhachHang && danhSachKhachHang.length === 0 ? (
+                  <p className="rounded border border-dashed border-[#c4c6cd] bg-[#fbf9f8] px-3 py-3 text-sm text-[#43474d]">
+                    Không tìm thấy khách hàng phù hợp.
+                  </p>
+                ) : null}
+
+                {danhSachKhachHang.map((khach) => {
+                  const daChon = maNguoiDungDaChon === khach.maNguoiDung;
+                  return (
+                    <button
+                      key={khach.maNguoiDung}
+                      type="button"
+                      className={`flex w-full items-center justify-between gap-3 rounded border px-3 py-3 text-left transition ${
+                        daChon
+                          ? 'border-[#7d562d] bg-[#fff7ef] ring-2 ring-[#ffdcbd]'
+                          : 'border-[#ece6df] bg-[#fbf9f8] hover:border-[#7d562d]'
+                      }`}
+                      onClick={() => setMaNguoiDungDaChon(khach.maNguoiDung)}
+                    >
+                      <span className="flex min-w-0 items-center gap-3">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#c4c6cd] bg-white text-[#03192e]">
+                          <UserRound size={18} />
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block truncate text-sm font-bold text-[#03192e]">{khach.hoVaTen}</span>
+                          <span className="block truncate text-xs text-[#43474d]">
+                            {khach.tenDangNhap} · {khach.email}
+                          </span>
+                        </span>
+                      </span>
+                      {daChon ? <CheckCircle2 className="shrink-0 text-[#7d562d]" size={18} /> : null}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           ) : null}
 
           <label className="block text-sm font-bold text-[#43474d]">

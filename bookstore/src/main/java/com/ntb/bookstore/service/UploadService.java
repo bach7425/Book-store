@@ -37,7 +37,7 @@ public class UploadService {
             throw new HethongLoiException("Chỉ hỗ trợ ảnh jpg, jpeg, png, webp");
         }
 
-        String tenFile = UUID.randomUUID() + "." + duoiFile;
+        String tenFile = file.getOriginalFilename();
         Path thuMucGoc = Paths.get(cauHinhUpload.getDir()).toAbsolutePath().normalize();
         Path thuMucLuu = thuMucGoc.resolve(thuMuc).normalize();
         if (!thuMucLuu.startsWith(thuMucGoc)) {

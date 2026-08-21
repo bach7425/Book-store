@@ -173,7 +173,8 @@ public class DonHangService {
         BigDecimal donToiThieu = maGiamGia.getDonToiThieu() == null ? BigDecimal.ZERO : maGiamGia.getDonToiThieu();
         if (tongTien.compareTo(donToiThieu) < 0) {
             throw new HethongLoiException(
-                    "Đơn hàng phải có tổng tiền tối thiểu là " + donToiThieu + " để áp dụng mã giảm giá");
+                    "Đơn hàng tối thiểu " + donToiThieu.intValue()
+                            + " vnđ để áp dụng mã giảm giá");
         }
 
         BigDecimal soTienGiam;
