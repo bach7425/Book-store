@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -68,6 +69,35 @@ public class XuLyException {
 
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAuthorizationDeniedException(
+            AuthorizationDeniedException ex) {
+
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
+                .thanhCong(false)
+                .thongBao("Bạn không có quyền truy cập.")
+                .duLieu(null)
+                .thoiGian(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<Void>> handleIllegalArgumentException(
+            IllegalArgumentException ex) {
+
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
+                .thanhCong(false)
+                .thongBao(ex.getMessage())
+                .duLieu(null)
+                .thoiGian(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<?>> handleValidation(
             MethodArgumentNotValidException ex) {
@@ -85,5 +115,17 @@ public class XuLyException {
                 .build();
 
         return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse<Void>> handleUnexpectedException(Exception ex) {
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
+                .thanhCong(false)
+                .thongBao("Lỗi hệ thống")
+                .duLieu(null)
+                .thoiGian(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }

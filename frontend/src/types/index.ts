@@ -19,7 +19,6 @@ export interface TacGia {
   maTacGia: number;
   ten: string;
   tieuSu?: string;
-  anhDaiDien?: string;
 }
 
 export interface TheLoai {
@@ -35,6 +34,14 @@ export interface Sach {
   gia: number;
   anhBia?: string;
   nhaXuatBan?: string;
+  doTuoi?: string;
+  tenNhaCungCap?: string;
+  nguoiDich?: string;
+  ngonNgu?: string;
+  trongLuongGram?: number;
+  kichThuocBaoBi?: string;
+  soTrang?: number;
+  hinhThuc?: string;
   ngayXuatBan?: string;
   tacGia?: TacGia;
   theLoais?: TheLoai[];

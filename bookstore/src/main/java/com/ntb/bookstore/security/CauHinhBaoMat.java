@@ -26,53 +26,58 @@ import tools.jackson.databind.ObjectMapper;
 @EnableMethodSecurity
 public class CauHinhBaoMat {
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration cauHinh = new CorsConfiguration();
-        cauHinh.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://127.0.0.1:5173",
-                "https://fe-production-90c2.up.railway.app"));
-        cauHinh.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        cauHinh.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
-        cauHinh.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", cauHinh);
-        return source;
-    }
+        @Bean
+        public CorsConfigurationSource corsConfigurationSource() {
+                CorsConfiguration cauHinh = new CorsConfiguration();
+                cauHinh.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://127.0.0.1:5173",
+                                "https://spotted-unbridle-barley.ngrok-free.dev"));
+                cauHinh.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+                cauHinh.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+                cauHinh.setAllowCredentials(true);
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                source.registerCorsConfiguration("/**", cauHinh);
+                return source;
+        }
 
-    @Bean
-    public SecurityFilterChain chuoiBoLoc(HttpSecurity http, JwtBoLocXacThuc jwtBoLocXacThuc) throws Exception {
-        http.cors(Customizer.withDefaults())
-                .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(ex -> ex.authenticationEntryPoint(new DiemVaoXacThucJwt(new ObjectMapper()))
-                        .accessDeniedHandler(new JwtXuLyTuchoiTruyCap()))
-                .authorizeHttpRequests(xacThuc -> xacThuc
-                        .requestMatchers("/api/xac-thuc/**", "/api/sach/**", "/api/the-loai/**", "/api/tac-gia/**",
-                                "/uploads/**", "/api/ai/**", "/api/test/**")
-                        .permitAll()
-                        .requestMatchers("/api/nguoi-dung/**", "/api/quan-tri/**", "/api/gio-hang/**",
-                                "/api/don-hang/**", "/api/danh-gia/**", "/api/sach-yeu-thich/**",
-                                "/api/thong-bao/**", "/api/ma-giam-gia/**")
-                        .authenticated()
-                        .anyRequest().authenticated())
-                .addFilterBefore(jwtBoLocXacThuc, UsernamePasswordAuthenticationFilter.class);
+        @Bean
+        public SecurityFilterChain chuoiBoLoc(HttpSecurity http, JwtBoLocXacThuc jwtBoLocXacThuc) throws Exception {
+                http.cors(Customizer.withDefaults())
+                                .csrf(csrf -> csrf.disable())
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .exceptionHandling(ex -> ex
+                                                .authenticationEntryPoint(new DiemVaoXacThucJwt(new ObjectMapper()))
+                                                .accessDeniedHandler(new JwtXuLyTuchoiTruyCap()))
+                                .authorizeHttpRequests(xacThuc -> xacThuc
+                                                .requestMatchers("/api/xac-thuc/**", "/api/sach/**", "/api/the-loai/**",
+                                                                "/api/tac-gia/**",
+                                                                "/uploads/**", "/api/ai/**", "/api/test/**")
+                                                .permitAll()
+                                                .requestMatchers("/api/nguoi-dung/**", "/api/quan-tri/**",
+                                                                "/api/gio-hang/**",
+                                                                "/api/don-hang/**", "/api/danh-gia/**",
+                                                                "/api/sach-yeu-thich/**",
+                                                                "/api/thong-bao/**")
+                                                .authenticated()
+                                                .anyRequest().authenticated())
+                                .addFilterBefore(jwtBoLocXacThuc, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+                return http.build();
+        }
 
-    @Bean
-    public JwtBoLocXacThuc jwtBoLocXacThuc(JwtService jwtService,
-            org.springframework.security.core.userdetails.UserDetailsService userDetailsService) {
-        return new JwtBoLocXacThuc(jwtService, userDetailsService);
-    }
+        @Bean
+        public JwtBoLocXacThuc jwtBoLocXacThuc(JwtService jwtService,
+                        org.springframework.security.core.userdetails.UserDetailsService userDetailsService) {
+                return new JwtBoLocXacThuc(jwtService, userDetailsService);
+        }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
-    }
+        @Bean
+        public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+                return authConfig.getAuthenticationManager();
+        }
 }

@@ -64,7 +64,6 @@ export function QuanTriThongBaoPage() {
       tieuDe: form.tieuDe,
       noiDung: form.noiDung,
       loai: form.loai,
-      duongDan: form.duongDan || undefined,
     });
   };
 
@@ -159,7 +158,6 @@ export function QuanTriThongBaoPage() {
             placeholder="Nội dung thông báo"
             {...register('noiDung', { required: true })}
           />
-          <Input placeholder="Đường dẫn khi bấm vào thông báo, ví dụ /don-hang" {...register('duongDan')} />
         </div>
 
         <div className="mt-6 flex justify-end">

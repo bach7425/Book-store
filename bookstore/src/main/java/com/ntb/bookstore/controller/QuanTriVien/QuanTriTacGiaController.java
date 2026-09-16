@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.ntb.bookstore.dto.ApiResponse;
 import com.ntb.bookstore.dto.Sach.TacGiaResponse;
@@ -31,20 +29,13 @@ public class QuanTriTacGiaController {
     @PostMapping
     public ResponseEntity<ApiResponse<TacGiaResponse>> themTacGia(@RequestBody ThemTacGiaRequest request) {
         return ResponseEntity.ok(ApiResponse.of(true, "Thêm tác giả thành công", LocalDateTime.now(),
-                sachService.themTacGia(request.getTen(), request.getTieuSu(), request.getAnhDaiDien())));
+                sachService.themTacGia(request.getTen(), request.getTieuSu())));
     }
 
     @PutMapping("/{maTacGia}")
     public ResponseEntity<ApiResponse<TacGiaResponse>> capNhatTacGia(@PathVariable Long maTacGia,
             @RequestBody ThemTacGiaRequest request) {
         return ResponseEntity.ok(ApiResponse.of(true, "Cập nhật tác giả thành công", LocalDateTime.now(),
-                sachService.capNhatTacGia(maTacGia, request.getTen(), request.getTieuSu(), request.getAnhDaiDien())));
-    }
-
-    @PostMapping("/{maTacGia}/anh-dai-dien")
-    public ResponseEntity<ApiResponse<TacGiaResponse>> capNhatAnhDaiDienTacGia(@PathVariable Long maTacGia,
-            @RequestParam("file") MultipartFile file) {
-        return ResponseEntity.ok(ApiResponse.of(true, "Cập nhật ảnh đại diện tác giả thành công", LocalDateTime.now(),
-                sachService.capNhatAnhDaiDienTacGia(maTacGia, file)));
+                sachService.capNhatTacGia(maTacGia, request.getTen(), request.getTieuSu())));
     }
 }

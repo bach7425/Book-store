@@ -169,7 +169,7 @@ public class DanhGiaService {
                                 "Cập nhật đánh giá",
                                 noiDung,
                                 LoaiThongBao.DANH_GIA,
-                                "/danh-gia/" + danhGia.getMaDanhGia());
+                                "/sach/" + danhGia.getSach().getMaSach());
                 return toResponse(danhGia);
         }
 
@@ -196,6 +196,7 @@ public class DanhGiaService {
                                 .noiDung(danhGia.getNoiDung())
                                 .trangThai(danhGia.getTrangThai().name())
                                 .phanHoi(danhGia.getPhanHoi())
+                                .ngayTao(danhGia.getNgayTao())
                                 .build();
         }
 }

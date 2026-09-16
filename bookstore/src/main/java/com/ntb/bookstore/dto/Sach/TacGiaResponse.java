@@ -15,5 +15,4 @@ public class TacGiaResponse {
     private Long maTacGia;
     private String ten;
     private String tieuSu;
-    private String anhDaiDien;
 }

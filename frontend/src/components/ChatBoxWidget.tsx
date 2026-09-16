@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { ChevronDown, Globe, MessageCircle, Send, X } from 'lucide-react';
+import { Bot, ChevronDown, Globe, MessageCircle, Send, Sparkles, UserRound } from 'lucide-react';
 import { type KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { chatBoxApi } from '../api/chatBoxApi';
 import type { ChatRequest, TinNhanChat } from '../types';
@@ -22,6 +22,12 @@ function taoTinNhan(vaiTro: TinNhanChat['vaiTro'], noiDung: string, trangThai?: 
 interface BienGuiChat extends ChatRequest {
   maTinNhanCho: string;
 }
+
+const cauHoiGoiY = [
+  'Gợi ý sách văn học Việt Nam dễ đọc',
+  'Sách nào phù hợp để phát triển bản thân?',
+  'Tìm sách công nghệ thông tin còn hàng',
+];
 
 export function ChatBoxWidget() {
   const [dangMo, setDangMo] = useState(false);
@@ -101,45 +107,63 @@ export function ChatBoxWidget() {
   return (
     <div className="fixed bottom-4 right-4 z-50 sm:bottom-6 sm:right-6">
       {dangMo ? (
-        <section className="paper-panel flex h-[min(620px,calc(100vh-6rem))] w-[calc(100vw-2rem)] max-w-[410px] flex-col overflow-hidden rounded bg-[#fbf9f8] shadow-[0_18px_45px_rgba(3,25,46,0.18)]">
-          <header className="flex min-h-14 items-center justify-between border-b border-[#c4c6cd]/80 bg-[#03192e] px-4 text-white">
+        <section className="flex h-[min(680px,calc(100vh-5rem))] w-[calc(100vw-1.5rem)] max-w-[440px] flex-col overflow-hidden overflow-x-hidden rounded border border-[#c4c6cd] bg-[#fbf9f8] shadow-[0_24px_70px_rgba(3,25,46,0.24)]">
+          <header className="flex min-h-16 items-center justify-between border-b border-[#1a2e44] bg-[#03192e] px-4 text-white">
             <div className="flex items-center gap-3">
-              <span className="grid h-9 w-9 place-items-center rounded bg-white/12">
-                <MessageCircle size={19} />
+              <span className="grid h-10 w-10 place-items-center rounded bg-white/12 ring-1 ring-white/15">
+                <Bot size={21} />
               </span>
               <div>
                 <h2 className="text-sm font-bold leading-tight">Trợ lý tư vấn sách</h2>
-                <p className="text-xs text-white/72">Book Store AI</p>
+                <p className="mt-1 flex items-center gap-2 text-xs text-white/72">
+                  <span className="h-2 w-2 rounded-full bg-[#6ee7b7]" />
+                  Book Store AI đang sẵn sàng
+                </p>
               </div>
             </div>
-            <div className="flex items-center gap-1">
-              <button
-                type="button"
-                className="grid h-9 w-9 place-items-center rounded text-white/82 transition hover:bg-white/12 hover:text-white"
-                onClick={() => setDangMo(false)}
-                aria-label="Thu gọn chatbox"
-              >
-                <ChevronDown size={19} />
-              </button>
-              <button
-                type="button"
-                className="grid h-9 w-9 place-items-center rounded text-white/82 transition hover:bg-white/12 hover:text-white"
-                onClick={() => setDangMo(false)}
-                aria-label="Đóng chatbox"
-              >
-                <X size={18} />
-              </button>
-            </div>
+            <button
+              type="button"
+              className="grid h-9 w-9 place-items-center rounded text-white/82 transition hover:bg-white/12 hover:text-white"
+              onClick={() => setDangMo(false)}
+              aria-label="Thu gọn chatbox"
+            >
+              <ChevronDown size={20} />
+            </button>
           </header>
 
-          <div className="flex-1 overflow-y-auto px-4 py-4">
-            <div className="grid gap-3">
+          <div className="flex-1 overflow-x-hidden overflow-y-auto bg-[#fbf9f8] px-4 py-4">
+            <div className="mb-4 rounded border border-[#e4e2e2] bg-white p-3">
+              <p className="flex items-center gap-2 text-xs font-bold uppercase text-[#7d562d]">
+                <Sparkles size={14} />
+                Gợi ý nhanh
+              </p>
+              <div className="mt-3 grid gap-2">
+                {cauHoiGoiY.map((cauHoi) => (
+                  <button
+                    key={cauHoi}
+                    type="button"
+                    className="min-w-0 rounded border border-[#e4e2e2] bg-[#fbf9f8] px-3 py-2 text-left text-sm font-semibold text-[#43474d] transition hover:border-[#d8c6b4] hover:bg-[#fff7ef] hover:text-[#03192e] disabled:opacity-50"
+                    onClick={() => guiCauHoi({ cauHoi, isSearchWeb })}
+                    disabled={mutation.isPending}
+                  >
+                    {cauHoi}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid gap-4">
               {tinNhans.map((tinNhan) => {
                 const laNguoiDung = tinNhan.vaiTro === 'nguoi-dung';
                 return (
-                  <article key={tinNhan.id} className={`flex ${laNguoiDung ? 'justify-end' : 'justify-start'}`}>
+                  <article key={tinNhan.id} className={`flex min-w-0 items-end gap-2 ${laNguoiDung ? 'justify-end' : 'justify-start'}`}>
+                    {!laNguoiDung ? (
+                      <span className="grid h-8 w-8 shrink-0 place-items-center rounded bg-[#03192e] text-white">
+                        <Bot size={16} />
+                      </span>
+                    ) : null}
                     <div
-                      className={`max-w-[86%] rounded px-3 py-2 text-sm leading-relaxed ${
+                      className={`min-w-0 max-w-[82%] overflow-hidden rounded px-3 py-2 text-sm leading-relaxed shadow-[0_8px_18px_rgba(3,25,46,0.05)] ${
                         laNguoiDung
                           ? 'bg-[#03192e] text-white'
                           : tinNhan.trangThai === 'loi'
@@ -159,6 +183,11 @@ export function ChatBoxWidget() {
                         </button>
                       ) : null}
                     </div>
+                    {laNguoiDung ? (
+                      <span className="grid h-8 w-8 shrink-0 place-items-center rounded bg-[#ffdcbd] text-[#623f18]">
+                        <UserRound size={16} />
+                      </span>
+                    ) : null}
                   </article>
                 );
               })}
@@ -166,7 +195,7 @@ export function ChatBoxWidget() {
             </div>
           </div>
 
-          <div className="border-t border-[#c4c6cd]/80 bg-white/80 p-3">
+          <div className="border-t border-[#c4c6cd]/80 bg-white p-3">
             <label className="mb-3 flex items-center justify-between gap-3 rounded border border-[#d8c6b4] bg-[#fffaf5] px-3 py-2 text-sm font-semibold text-[#43474d]">
               <span className="flex items-center gap-2">
                 <Globe size={17} className="text-[#7d562d]" />
@@ -179,12 +208,12 @@ export function ChatBoxWidget() {
                 onChange={(event) => setIsSearchWeb(event.target.checked)}
               />
             </label>
-            <div className="flex items-end gap-2">
+            <div className="flex items-end gap-2 rounded border border-[#c4c6cd] bg-[#fbf9f8] p-2 transition focus-within:border-[#03192e] focus-within:ring-2 focus-within:ring-[#b4c8e4]/45">
               <textarea
                 value={noiDungNhap}
                 onChange={(event) => setNoiDungNhap(event.target.value)}
                 onKeyDown={xuLyNhapPhim}
-                className="textarea-paper max-h-32 min-h-11 flex-1 resize-none px-3 py-2 text-sm"
+                className="max-h-32 min-h-10 flex-1 resize-none border-0 bg-transparent px-1 py-2 text-sm text-[#03192e] outline-none placeholder:text-[#74777d]"
                 rows={1}
                 placeholder="Bạn muốn tìm sách gì?"
                 disabled={mutation.isPending}
@@ -204,11 +233,11 @@ export function ChatBoxWidget() {
       ) : (
         <button
           type="button"
-          className="grid h-14 w-14 place-items-center rounded bg-[#03192e] text-white shadow-[0_16px_35px_rgba(3,25,46,0.28)] transition hover:bg-[#1a2e44] focus:outline-none focus:ring-4 focus:ring-[#b4c8e4]/55"
+          className="group grid h-14 w-14 place-items-center rounded bg-[#03192e] text-white shadow-[0_16px_35px_rgba(3,25,46,0.28)] transition hover:-translate-y-0.5 hover:bg-[#1a2e44] focus:outline-none focus:ring-4 focus:ring-[#b4c8e4]/55"
           onClick={() => setDangMo(true)}
           aria-label="Mở chatbox tư vấn sách"
         >
-          <MessageCircle size={25} />
+          <MessageCircle size={25} className="transition group-hover:scale-105" />
         </button>
       )}
     </div>

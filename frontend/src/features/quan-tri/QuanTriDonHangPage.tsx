@@ -15,8 +15,8 @@ const trangThaiOptions = ['CHO_XU_LY', 'DA_XAC_NHAN', 'DANG_GIAO', 'DA_GIAO', 'D
 function trangThaiTiepTheo(don: DonHang) {
   const bangTrangThai: Record<string, string[]> = {
     CHO_XU_LY: ['DA_XAC_NHAN', 'DA_HUY'],
-    DA_XAC_NHAN: ['DANG_GIAO'],
-    DANG_GIAO: ['DA_GIAO'],
+    DA_XAC_NHAN: ['DANG_GIAO', 'DA_HUY'],
+    DANG_GIAO: ['DA_GIAO', 'DA_HUY'],
     DA_GIAO: [],
     DA_HUY: [],
   };
@@ -79,7 +79,7 @@ export function QuanTriDonHangPage() {
       </div>
 
       <Bang>
-        <table className="w-full min-w-[1060px] text-left text-sm">
+        <table className="w-full min-w-[1120px] text-left text-sm">
           <thead className="du-lieu-heading">
             <tr>
               <th className="px-4 py-3">Mã đơn</th>
@@ -88,7 +88,7 @@ export function QuanTriDonHangPage() {
               <th className="px-4 py-3">Địa chỉ</th>
               <th className="px-4 py-3">Thanh toán</th>
               <th className="px-4 py-3">Tiền</th>
-              <th className="px-4 py-3">Thao tác</th>
+              <th className="px-4 py-3 text-right">Thao tác</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#ece6df]">
@@ -111,7 +111,7 @@ export function QuanTriDonHangPage() {
                   </td>
                   <td className="font-mono-label px-4 py-3 font-semibold text-[#7d562d]">{dinhDangTien(don.tongTienThanhToan)}</td>
                   <td className="px-4 py-3">
-                    <div className="flex max-w-72 flex-wrap justify-end gap-2">
+                    <div className="flex min-w-max flex-nowrap justify-end gap-2 whitespace-nowrap">
                       {trangThaiHopLe.map((trangThaiMoi) => (
                         <Button key={trangThaiMoi} kieu={trangThaiMoi === 'DA_HUY' ? 'canh-bao' : 'phu'} disabled={capNhat.isPending} onClick={() => capNhat.mutate({ maDonHang: don.maDonHang, trangThaiMoi })}>
                           {tenThaoTacTrangThai(trangThaiMoi)}

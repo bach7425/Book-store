@@ -44,12 +44,6 @@ public class MaGiamGiaService {
         return new PageResponse<>(maGiamGias.map(this::toResponse), baseUrl);
     }
 
-    public MaGiamGiaResponse chiTietMaGiamGia(Long maGiamGiaId) {
-        MaGiamGia maGiamGia = maGiamGiaRepository.findById(maGiamGiaId)
-                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy mã giảm giá", maGiamGiaId));
-        return toResponse(maGiamGia);
-    }
-
     public MaGiamGiaResponse taoMaGiamGia(TaoMaGiamGiaRequest request) {
         String maCode = layMaCodeHopLe(request.getMaCode());
         if (maGiamGiaRepository.existsByMaCodeIgnoreCase(maCode)) {

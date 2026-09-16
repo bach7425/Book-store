@@ -37,6 +37,30 @@ public class Sach {
     @Column(name = "nha_xuat_ban", length = 150)
     private String nhaXuatBan;
 
+    @Column(name = "do_tuoi", length = 50)
+    private String doTuoi;
+
+    @Column(name = "ten_nha_cung_cap", length = 255)
+    private String tenNhaCungCap;
+
+    @Column(name = "nguoi_dich", length = 255)
+    private String nguoiDich;
+
+    @Column(name = "ngon_ngu", length = 100)
+    private String ngonNgu;
+
+    @Column(name = "trong_luong_gram")
+    private Integer trongLuongGram;
+
+    @Column(name = "kich_thuoc_bao_bi", length = 100)
+    private String kichThuocBaoBi;
+
+    @Column(name = "so_trang")
+    private Integer soTrang;
+
+    @Column(name = "hinh_thuc", length = 100)
+    private String hinhThuc;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ma_tac_gia", nullable = false)
     private TacGia tacGia;

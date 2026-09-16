@@ -2,6 +2,7 @@ package com.ntb.bookstore.controller;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,5 +45,13 @@ public class SachController {
     public ResponseEntity<ApiResponse<SachResponse>> chiTietSach(@PathVariable Long maSach) {
         return ResponseEntity.ok(ApiResponse.of(true, "Lấy chi tiết sách thành công", LocalDateTime.now(),
                 sachService.chiTietSach(maSach)));
+    }
+
+    @GetMapping("/{maSach}/lien-quan")
+    public ResponseEntity<ApiResponse<List<SachResponse>>> sachLienQuan(
+            @PathVariable Long maSach,
+            @RequestParam(defaultValue = "8") int size) {
+        return ResponseEntity.ok(ApiResponse.of(true, "Lấy sách liên quan thành công", LocalDateTime.now(),
+                sachService.sachLienQuan(maSach, size)));
     }
 }

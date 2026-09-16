@@ -116,20 +116,11 @@ public class XacThucService {
             return jwtService.taoMaTruyCap(nguoiDung.getTenDangNhap(), nguoiDung.getMaNguoiDung(),
                     nguoiDung.getAuthorities().toString());
         } catch (Exception ex) {
-            throw new HethongLoiException("Refresh token không hợp lệ");
+            throw new HethongLoiException("Mã làm mới không hợp lệ");
         }
     }
 
     public NguoiDung layNguoiDungHienTai() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()
-                || authentication.getPrincipal() instanceof String) {
-            throw new HethongLoiException("Bạn chưa đăng nhập hoặc token không hợp lệ");
-        }
-        return (NguoiDung) authentication.getPrincipal();
-    }
-
-    public NguoiDung layNguoiDungHienTaiNeuCo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()
                 || authentication.getPrincipal() instanceof String) {
@@ -139,6 +130,10 @@ public class XacThucService {
     }
 
     public Long layMaNguoiDungHienTai() {
-        return layNguoiDungHienTai().getMaNguoiDung();
+        NguoiDung nguoiDung = layNguoiDungHienTai();
+        if (nguoiDung == null) {
+            throw new HethongLoiException("Bạn chưa đăng nhập hoặc token không hợp lệ");
+        }
+        return nguoiDung.getMaNguoiDung();
     }
 }

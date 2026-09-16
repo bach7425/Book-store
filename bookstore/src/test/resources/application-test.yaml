@@ -1,0 +1,46 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:bookstore_it;MODE=MySQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+    database-platform: org.hibernate.dialect.H2Dialect
+  sql:
+    init:
+      mode: never
+  ai:
+    openai:
+      api-key: test-key
+      base-url: http://localhost
+      chat:
+        model: test-model
+    google:
+      genai:
+        embedding:
+          api-key: test-key
+          text:
+            model: test-model
+    model:
+      chat: none
+      embedding:
+        text: none
+
+tavily:
+  api-key: test-key
+
+app:
+  upload:
+    dir: ${java.io.tmpdir}/bookstore-it-uploads
+    public-path: /uploads
+
+jwt:
+  bi-mat: 12345678901234567890123456789012345678901234567890
+  thoi-gian-hieu-luc: 3600000
+  thoi-gian-lam-moi: 86400000

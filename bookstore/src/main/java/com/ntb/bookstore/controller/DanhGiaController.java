@@ -37,7 +37,7 @@ public class DanhGiaController {
             @PathVariable Long maSach,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        var nguoiDung = xacThucService.layNguoiDungHienTaiNeuCo();
+        var nguoiDung = xacThucService.layNguoiDungHienTai();
         Long maNguoiDung = nguoiDung == null ? null : nguoiDung.getMaNguoiDung();
         String baseUrl = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
         return ResponseEntity.ok(ApiResponse.of(true, "Lấy đánh giá thành công", LocalDateTime.now(),

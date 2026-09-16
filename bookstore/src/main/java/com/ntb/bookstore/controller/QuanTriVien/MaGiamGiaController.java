@@ -42,12 +42,6 @@ public class MaGiamGiaController {
                 maGiamGiaService.danhSachMaGiamGia(trangThai, page, size, baseUrl)));
     }
 
-    @GetMapping("/{maGiamGia}")
-    public ResponseEntity<ApiResponse<MaGiamGiaResponse>> chiTietMaGiamGia(@PathVariable Long maGiamGia) {
-        return ResponseEntity.ok(ApiResponse.of(true, "Lấy chi tiết mã giảm giá thành công", LocalDateTime.now(),
-                maGiamGiaService.chiTietMaGiamGia(maGiamGia)));
-    }
-
     @PostMapping
     public ResponseEntity<ApiResponse<MaGiamGiaResponse>> taoMaGiamGia(@RequestBody TaoMaGiamGiaRequest request) {
         return ResponseEntity.ok(ApiResponse.of(true, "Tạo mã giảm giá thành công", LocalDateTime.now(),

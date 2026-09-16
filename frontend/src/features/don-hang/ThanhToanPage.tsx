@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { donHangApi } from '../../api/donHangApi';
 import { gioHangApi } from '../../api/gioHangApi';
-import { maGiamGiaApi } from '../../api/maGiamGiaApi';
 import { nguoiDungApi } from '../../api/nguoiDungApi';
 import { OTrong } from '../../components/ui/Bang';
 import { Button } from '../../components/ui/Button';
@@ -79,7 +78,7 @@ export function ThanhToanPage() {
       const ma = maGiamGia.trim();
       if (!ma) throw new Error('Vui lòng nhập mã giảm giá');
       if (tamTinh <= 0) throw new Error('Giỏ hàng chưa có tổng tiền hợp lệ');
-      return maGiamGiaApi.kiemTraMaGiamGia({ maGiamGia: ma, tongTien: tamTinh });
+      return donHangApi.kiemTraMaGiamGia({ maGiamGia: ma, tongTien: tamTinh });
     },
     onSuccess: (duLieu) => {
       setKetQuaMaGiamGia(duLieu);

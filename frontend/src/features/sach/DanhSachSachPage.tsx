@@ -105,7 +105,7 @@ export function DanhSachSachPage() {
             <option value="ngayXuatBan">Ngày xuất bản</option>
           </select>
         </div>
-        {isLoading ? <DangTai /> : error ? <OTrong tieuDe="Không tải được sách" moTa={error.message} /> : (data?.duLieu.length ?? 0) === 0 ? <OTrong tieuDe="Chưa có sách phù hợp" /> : <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">{data?.duLieu.map((sach) => <SachCard key={sach.maSach} sach={sach} daYeuThich={maSachYeuThich.has(sach.maSach)} />)}</div>}
+        {isLoading ? <DangTai /> : error ? <OTrong tieuDe="Không tải được sách" moTa={error.message} /> : (data?.duLieu.length ?? 0) === 0 ? <OTrong tieuDe="Không có sách phù hợp" /> : <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">{data?.duLieu.map((sach) => <SachCard key={sach.maSach} sach={sach} daYeuThich={maSachYeuThich.has(sach.maSach)} />)}</div>}
         {data?.trangTruoc || data?.tiepTheo ? (
           <div className="mt-8 flex justify-end gap-2">
             {data.trangTruoc ? <Button kieu="phu" onClick={() => capNhat('page', String(page - 1))}>Trang trước</Button> : null}

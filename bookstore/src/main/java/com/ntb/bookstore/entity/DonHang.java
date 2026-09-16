@@ -61,8 +61,4 @@ public class DonHang {
     @OneToOne(mappedBy = "donHang", cascade = CascadeType.ALL)
     private ThanhToan thanhToan;
 
-    @OneToMany(mappedBy = "donHang")
-    @Builder.Default
-    private List<LichSuDonHang> lichSuDonHangs = new ArrayList<>();
-
 }

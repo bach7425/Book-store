@@ -29,8 +29,8 @@ function TomTatThongBao({ thongBao }: { thongBao: ThongBao }) {
 }
 
 export function ThongBaoChuong({ className = '' }: { className?: string }) {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const daDangNhap = useXacThucStore((state) => state.daDangNhap);
   const [dangMo, setDangMo] = useState(false);
   const { data: soChuaDoc } = useQuery({

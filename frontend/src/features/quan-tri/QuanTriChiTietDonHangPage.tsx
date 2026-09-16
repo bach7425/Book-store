@@ -1,10 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { donHangApi } from '../../api/donHangApi';
 import { quanTriApi } from '../../api/quanTriApi';
 import { Bang, OTrong } from '../../components/ui/Bang';
 import { Button } from '../../components/ui/Button';
 import { NutQuayLai } from '../../components/ui/NutQuayLai';
+import { PhanTrang } from '../../components/ui/PhanTrang';
 import { TrangThai } from '../../components/ui/TrangThai';
 import { useToastStore } from '../../components/ui/toastStore';
 import type { DonHang } from '../../types';
@@ -13,8 +15,8 @@ import { dinhDangNgay, dinhDangTien, tenTrangThai } from '../../utils/dinhDang';
 function trangThaiTiepTheo(don: DonHang) {
   const bangTrangThai: Record<string, string[]> = {
     CHO_XU_LY: ['DA_XAC_NHAN', 'DA_HUY'],
-    DA_XAC_NHAN: ['DANG_GIAO'],
-    DANG_GIAO: ['DA_GIAO'],
+    DA_XAC_NHAN: ['DANG_GIAO', 'DA_HUY'],
+    DANG_GIAO: ['DA_GIAO', 'DA_HUY'],
     DA_GIAO: [],
     DA_HUY: [],
   };
@@ -35,9 +37,12 @@ function tenThaoTacTrangThai(trangThai: string) {
   return bangTen[trangThai] ?? tenTrangThai(trangThai);
 }
 
+const KICH_THUOC_TRANG_SAN_PHAM = 5;
+
 export function QuanTriChiTietDonHangPage() {
   const { maDonHang } = useParams();
   const maDonHangSo = Number(maDonHang);
+  const [trangSanPham, setTrangSanPham] = useState(0);
   const queryClient = useQueryClient();
   const baoTin = useToastStore((state) => state.baoTin);
   const baoLoi = useToastStore((state) => state.baoLoi);
@@ -89,6 +94,21 @@ export function QuanTriChiTietDonHangPage() {
   }
 
   const sanPhams = donHang.sanPhams ?? donHang.items ?? [];
+  const tongSoTrangSanPham = Math.ceil(sanPhams.length / KICH_THUOC_TRANG_SAN_PHAM);
+  const trangSanPhamHienTai = Math.min(trangSanPham, Math.max(tongSoTrangSanPham - 1, 0));
+  const sanPhamsHienThi = sanPhams.slice(
+    trangSanPhamHienTai * KICH_THUOC_TRANG_SAN_PHAM,
+    (trangSanPhamHienTai + 1) * KICH_THUOC_TRANG_SAN_PHAM,
+  );
+  const phanTrangSanPham = {
+    duLieu: sanPhamsHienThi,
+    trang: trangSanPhamHienTai,
+    kichThuocTrang: KICH_THUOC_TRANG_SAN_PHAM,
+    tongSoPhanTu: sanPhams.length,
+    tongSoTrang: tongSoTrangSanPham,
+    trangTruoc: trangSanPhamHienTai > 0 ? String(trangSanPhamHienTai - 1) : null,
+    tiepTheo: trangSanPhamHienTai < tongSoTrangSanPham - 1 ? String(trangSanPhamHienTai + 1) : null,
+  };
   const trangThaiHopLe = trangThaiTiepTheo(donHang);
 
   return (
@@ -155,6 +175,7 @@ export function QuanTriChiTietDonHangPage() {
               <table className="w-full min-w-[720px] text-left text-sm">
                 <thead className="du-lieu-heading">
                   <tr>
+                    <th className="px-4 py-3">STT</th>
                     <th className="px-4 py-3">Sách</th>
                     <th className="px-4 py-3">Số lượng</th>
                     <th className="px-4 py-3">Đơn giá</th>
@@ -162,8 +183,11 @@ export function QuanTriChiTietDonHangPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#ece6df]">
-                  {sanPhams.map((item) => (
+                  {sanPhamsHienThi.map((item, index) => (
                     <tr className="du-lieu-row" key={`${donHang.maDonHang}-${item.maSach}`}>
+                      <td className="font-mono-label px-4 py-3 text-[#74777d]">
+                        {trangSanPhamHienTai * KICH_THUOC_TRANG_SAN_PHAM + index + 1}
+                      </td>
                       <td className="px-4 py-3">
                         <Link to={`/sach/${item.maSach}`} className="font-semibold text-[#03192e] hover:text-[#7d562d]">{item.tenSach}</Link>
                         <span className="font-mono-label mt-1 block text-xs text-[#74777d]">Mã sách #{item.maSach}</span>
@@ -176,6 +200,9 @@ export function QuanTriChiTietDonHangPage() {
                 </tbody>
               </table>
             </Bang>
+            <div className="mt-4">
+              <PhanTrang data={phanTrangSanPham} page={trangSanPhamHienTai} onPageChange={setTrangSanPham} />
+            </div>
           </div>
         </section>
 

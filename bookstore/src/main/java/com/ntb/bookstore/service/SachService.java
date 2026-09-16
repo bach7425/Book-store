@@ -1,6 +1,7 @@
 package com.ntb.bookstore.service;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,8 +59,10 @@ public class SachService {
     }
 
     public SachResponse themSach(String tenSach, String moTa, BigDecimal gia, String nhaXuatBan,
+            String doTuoi, String tenNhaCungCap, String nguoiDich, String ngonNgu, Integer trongLuongGram,
+            String kichThuocBaoBi, Integer soTrang, String hinhThuc,
             Long maTacGia, List<Long> maTheLoais, Integer soLuongTon) {
-        kiemTraGiaVaTonKho(gia, soLuongTon);
+        kiemTraThongTinSach(gia, soLuongTon, trongLuongGram, soTrang);
         TacGia tacGia = tacGiaRepository.findById(maTacGia)
                 .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy tác giả", maTacGia));
         List<TheLoai> theLoais = theLoaiRepository.findAllById(maTheLoais);
@@ -71,6 +74,14 @@ public class SachService {
                 .moTa(moTa)
                 .gia(gia)
                 .nhaXuatBan(nhaXuatBan)
+                .doTuoi(doTuoi)
+                .tenNhaCungCap(tenNhaCungCap)
+                .nguoiDich(nguoiDich)
+                .ngonNgu(ngonNgu)
+                .trongLuongGram(trongLuongGram)
+                .kichThuocBaoBi(kichThuocBaoBi)
+                .soTrang(soTrang)
+                .hinhThuc(hinhThuc)
                 .tacGia(tacGia)
                 .theLoais(theLoais)
                 .build();
@@ -85,8 +96,10 @@ public class SachService {
     }
 
     public SachResponse capNhatSach(Long maSach, String tenSach, String moTa, BigDecimal gia,
-            String nhaXuatBan, Long maTacGia, List<Long> maTheLoais, Integer soLuongTon) {
-        kiemTraGiaVaTonKho(gia, soLuongTon);
+            String nhaXuatBan, String doTuoi, String tenNhaCungCap, String nguoiDich, String ngonNgu,
+            Integer trongLuongGram, String kichThuocBaoBi, Integer soTrang, String hinhThuc,
+            Long maTacGia, List<Long> maTheLoais, Integer soLuongTon) {
+        kiemTraThongTinSach(gia, soLuongTon, trongLuongGram, soTrang);
         Sach sach = sachRepository.findById(maSach)
                 .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy sách", maSach));
         if (tenSach != null && !tenSach.isBlank())
@@ -97,6 +110,22 @@ public class SachService {
             sach.setGia(gia);
         if (nhaXuatBan != null)
             sach.setNhaXuatBan(nhaXuatBan);
+        if (doTuoi != null)
+            sach.setDoTuoi(doTuoi);
+        if (tenNhaCungCap != null)
+            sach.setTenNhaCungCap(tenNhaCungCap);
+        if (nguoiDich != null)
+            sach.setNguoiDich(nguoiDich);
+        if (ngonNgu != null)
+            sach.setNgonNgu(ngonNgu);
+        if (trongLuongGram != null)
+            sach.setTrongLuongGram(trongLuongGram);
+        if (kichThuocBaoBi != null)
+            sach.setKichThuocBaoBi(kichThuocBaoBi);
+        if (soTrang != null)
+            sach.setSoTrang(soTrang);
+        if (hinhThuc != null)
+            sach.setHinhThuc(hinhThuc);
         if (maTacGia != null) {
             TacGia tacGia = tacGiaRepository.findById(maTacGia)
                     .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy tác giả", maTacGia));
@@ -115,29 +144,49 @@ public class SachService {
             tonKho.setSoLuong(soLuongTon);
             tonKhoRepository.save(tonKho);
         }
-        return toResponse(sachRepository.save(sach));
+        Sach saved = sachRepository.save(sach);
+        ragService.themSachVaoVectorStore(saved);
+        return toResponse(saved);
     }
 
-    public SachResponse capNhatTonKho(Long maSach, Integer soLuong) {
-        if (soLuong == null || soLuong < 0) {
-            throw new HethongLoiException("Số lượng tồn kho không được âm");
-        }
-        Sach sach = sachRepository.findById(maSach)
-                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy sách", maSach));
-        TonKho tonKho = tonKhoRepository.findBySachMaSach(maSach)
-                .orElse(TonKho.builder().sach(sach).soLuong(0).build());
-        tonKho.setSoLuong(soLuong);
-        tonKhoRepository.save(tonKho);
-        return toResponse(sach);
-    }
-
-    private void kiemTraGiaVaTonKho(BigDecimal gia, Integer soLuongTon) {
+    private void kiemTraThongTinSach(BigDecimal gia, Integer soLuongTon, Integer trongLuongGram, Integer soTrang) {
         if (gia != null && gia.compareTo(BigDecimal.ZERO) < 0) {
             throw new HethongLoiException("Giá sách không được âm");
         }
         if (soLuongTon != null && soLuongTon < 0) {
             throw new HethongLoiException("Số lượng tồn kho không được âm");
         }
+        if (trongLuongGram != null && trongLuongGram < 0) {
+            throw new HethongLoiException("Trọng lượng không được âm");
+        }
+        if (soTrang != null && soTrang < 0) {
+            throw new HethongLoiException("Số trang không được âm");
+        }
+    }
+
+    public List<SachResponse> sachLienQuan(Long maSach, int size) {
+        Sach sach = sachRepository.findById(maSach)
+                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy sách", maSach));
+        int gioiHan = Math.max(1, Math.min(size, 12));
+        List<Long> maTheLoais = sach.getTheLoais().stream().map(TheLoai::getMaTheLoai).collect(Collectors.toList());
+        return sachRepository.findAllForRag().stream()
+                .filter(item -> !item.getMaSach().equals(maSach))
+                .filter(item -> cungTacGia(sach, item) || coTheLoaiChung(item, maTheLoais))
+                .sorted(Comparator
+                        .comparing((Sach item) -> cungTacGia(sach, item) ? 0 : 1)
+                        .thenComparing(Sach::getTenSach, String.CASE_INSENSITIVE_ORDER))
+                .limit(gioiHan)
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    private boolean cungTacGia(Sach sach, Sach sachKhac) {
+        return sach.getTacGia() != null && sachKhac.getTacGia() != null
+                && sach.getTacGia().getMaTacGia().equals(sachKhac.getTacGia().getMaTacGia());
+    }
+
+    private boolean coTheLoaiChung(Sach sach, List<Long> maTheLoais) {
+        return sach.getTheLoais().stream().anyMatch(theLoai -> maTheLoais.contains(theLoai.getMaTheLoai()));
     }
 
     public SachResponse capNhatAnhBia(Long maSach, MultipartFile file) {
@@ -154,15 +203,15 @@ public class SachService {
         return new PageResponse<>(pageTacGia.map(this::toTacGiaResponse), baseUrl);
     }
 
-    public TacGiaResponse themTacGia(String ten, String tieuSu, String anhDaiDien) {
+    public TacGiaResponse themTacGia(String ten, String tieuSu) {
         if (ten == null || ten.isBlank()) {
             throw new HethongLoiException("Tên tác giả không được để trống");
         }
-        TacGia tacGia = TacGia.builder().ten(ten).tieuSu(tieuSu).anhDaiDien(anhDaiDien).build();
+        TacGia tacGia = TacGia.builder().ten(ten).tieuSu(tieuSu).build();
         return toTacGiaResponse(tacGiaRepository.save(tacGia));
     }
 
-    public TacGiaResponse capNhatTacGia(Long maTacGia, String ten, String tieuSu, String anhDaiDien) {
+    public TacGiaResponse capNhatTacGia(Long maTacGia, String ten, String tieuSu) {
         TacGia tacGia = tacGiaRepository.findById(maTacGia)
                 .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy tác giả", maTacGia));
         if (ten != null) {
@@ -174,17 +223,6 @@ public class SachService {
         if (tieuSu != null) {
             tacGia.setTieuSu(tieuSu);
         }
-        if (anhDaiDien != null) {
-            tacGia.setAnhDaiDien(anhDaiDien);
-        }
-        return toTacGiaResponse(tacGiaRepository.save(tacGia));
-    }
-
-    public TacGiaResponse capNhatAnhDaiDienTacGia(Long maTacGia, MultipartFile file) {
-        TacGia tacGia = tacGiaRepository.findById(maTacGia)
-                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy tác giả", maTacGia));
-        String duongDanAnh = uploadService.luuAnh(file, "tac-gia");
-        tacGia.setAnhDaiDien(duongDanAnh);
         return toTacGiaResponse(tacGiaRepository.save(tacGia));
     }
 
@@ -228,11 +266,19 @@ public class SachService {
                 .gia(sach.getGia())
                 .anhBia(sach.getAnhBia())
                 .nhaXuatBan(sach.getNhaXuatBan())
+                .doTuoi(sach.getDoTuoi())
+                .tenNhaCungCap(sach.getTenNhaCungCap())
+                .nguoiDich(sach.getNguoiDich())
+                .ngonNgu(sach.getNgonNgu())
+                .trongLuongGram(sach.getTrongLuongGram())
+                .kichThuocBaoBi(sach.getKichThuocBaoBi())
+                .soTrang(sach.getSoTrang())
+                .hinhThuc(sach.getHinhThuc())
                 .ngayXuatBan(sach.getNgayXuatBan())
                 .tacGia(sach.getTacGia() == null ? null
                         : TacGiaResponse.builder().maTacGia(sach.getTacGia().getMaTacGia())
                                 .ten(sach.getTacGia().getTen()).tieuSu(sach.getTacGia().getTieuSu())
-                                .anhDaiDien(sach.getTacGia().getAnhDaiDien()).build())
+                                .build())
                 .theLoais(sach.getTheLoais().stream()
                         .map(theLoai -> TheLoaiResponse.builder().maTheLoai(theLoai.getMaTheLoai())
                                 .ten(theLoai.getTen()).moTa(theLoai.getMoTa()).build())
@@ -245,7 +291,6 @@ public class SachService {
 
     private TacGiaResponse toTacGiaResponse(TacGia tacGia) {
         return TacGiaResponse.builder().maTacGia(tacGia.getMaTacGia()).ten(tacGia.getTen()).tieuSu(tacGia.getTieuSu())
-                .anhDaiDien(tacGia.getAnhDaiDien())
                 .build();
     }
 

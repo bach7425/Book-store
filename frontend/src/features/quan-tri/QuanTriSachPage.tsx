@@ -12,10 +12,40 @@ import { useToastStore } from '../../components/ui/toastStore';
 import type { Sach, TheLoai } from '../../types';
 import { dinhDangTien, duongDanAnh } from '../../utils/dinhDang';
 
-type FormSach = { tenSach: string; moTa?: string; gia: number | ''; nhaXuatBan?: string; maTacGia?: number; soLuongTon?: number | '' };
+type FormSach = {
+  tenSach: string;
+  moTa?: string;
+  gia: number | '';
+  nhaXuatBan?: string;
+  doTuoi?: string;
+  tenNhaCungCap?: string;
+  nguoiDich?: string;
+  ngonNgu?: string;
+  trongLuongGram?: number | '';
+  kichThuocBaoBi?: string;
+  soTrang?: number | '';
+  hinhThuc?: string;
+  maTacGia?: number;
+  soLuongTon?: number | '';
+};
 
 const lopTagTheLoai = 'inline-flex items-center gap-2 rounded bg-[#d8efe1] px-3 py-1 text-sm font-bold text-[#14532d]';
-const formSachRong: FormSach = { tenSach: '', moTa: '', gia: '', nhaXuatBan: '', maTacGia: undefined, soLuongTon: '' };
+const formSachRong: FormSach = {
+  tenSach: '',
+  moTa: '',
+  gia: '',
+  nhaXuatBan: '',
+  doTuoi: '',
+  tenNhaCungCap: '',
+  nguoiDich: '',
+  ngonNgu: '',
+  trongLuongGram: '',
+  kichThuocBaoBi: '',
+  soTrang: '',
+  hinhThuc: '',
+  maTacGia: undefined,
+  soLuongTon: '',
+};
 
 export function QuanTriSachPage() {
   const queryClient = useQueryClient();
@@ -96,6 +126,14 @@ export function QuanTriSachPage() {
       moTa: sach.moTa,
       gia: sach.gia,
       nhaXuatBan: sach.nhaXuatBan,
+      doTuoi: sach.doTuoi,
+      tenNhaCungCap: sach.tenNhaCungCap,
+      nguoiDich: sach.nguoiDich,
+      ngonNgu: sach.ngonNgu,
+      trongLuongGram: sach.trongLuongGram,
+      kichThuocBaoBi: sach.kichThuocBaoBi,
+      soTrang: sach.soTrang,
+      hinhThuc: sach.hinhThuc,
       maTacGia: sach.tacGia?.maTacGia,
       soLuongTon: sach.soLuongTon,
     });
@@ -107,7 +145,15 @@ export function QuanTriSachPage() {
 
   const luuSach = useMutation({
     mutationFn: async (form: FormSach) => {
-      const duLieu = { ...form, gia: Number(form.gia), soLuongTon: Number(form.soLuongTon || 0), maTacGia: Number(form.maTacGia || 0), maTheLoai: theLoaiDaChon.map((item) => item.maTheLoai) };
+      const duLieu = {
+        ...form,
+        gia: Number(form.gia),
+        soLuongTon: Number(form.soLuongTon || 0),
+        trongLuongGram: form.trongLuongGram === '' ? undefined : Number(form.trongLuongGram),
+        soTrang: form.soTrang === '' ? undefined : Number(form.soTrang),
+        maTacGia: Number(form.maTacGia || 0),
+        maTheLoai: theLoaiDaChon.map((item) => item.maTheLoai),
+      };
       const sachDaLuu = dangSua ? await quanTriApi.capNhatSach(dangSua.maSach, duLieu) : await quanTriApi.themSach(duLieu);
       return anhBiaFile ? quanTriApi.capNhatAnhBia(sachDaLuu.maSach, anhBiaFile) : sachDaLuu;
     },
@@ -125,8 +171,12 @@ export function QuanTriSachPage() {
   const xuLyLuuSach = (form: FormSach) => {
     const gia = Number(form.gia);
     const soLuongTon = Number(form.soLuongTon || 0);
+    const trongLuongGram = Number(form.trongLuongGram || 0);
+    const soTrang = Number(form.soTrang || 0);
     if (gia < 0) return baoLoi('Giá sách không được âm');
     if (soLuongTon < 0) return baoLoi('Tồn kho không được âm');
+    if (trongLuongGram < 0) return baoLoi('Trọng lượng không được âm');
+    if (soTrang < 0) return baoLoi('Số trang không được âm');
     const tacGiaDaChon = timTacGiaTheoTen(tenTacGia);
     if (!tacGiaDaChon) return baoLoi('Vui lòng chọn tác giả trong danh sách gợi ý');
     luuSach.mutate({ ...form, maTacGia: tacGiaDaChon.maTacGia });
@@ -201,6 +251,14 @@ export function QuanTriSachPage() {
               <Input placeholder="Giá" type="number" min={0} {...register('gia', { required: true, min: 0 })} />
               <Input placeholder="Số lượng tồn" type="number" min={0} {...register('soLuongTon', { min: 0 })} />
               <Input placeholder="Nhà xuất bản" {...register('nhaXuatBan')} />
+              <Input placeholder="Độ tuổi" {...register('doTuoi')} />
+              <Input placeholder="Tên nhà cung cấp" {...register('tenNhaCungCap')} />
+              <Input placeholder="Người dịch" {...register('nguoiDich')} />
+              <Input placeholder="Ngôn ngữ" {...register('ngonNgu')} />
+              <Input placeholder="Trọng lượng (gr)" type="number" min={0} {...register('trongLuongGram', { min: 0 })} />
+              <Input placeholder="Số trang" type="number" min={0} {...register('soTrang', { min: 0 })} />
+              <Input placeholder="Kích thước bao bì" {...register('kichThuocBaoBi')} />
+              <Input placeholder="Hình thức" {...register('hinhThuc')} />
               <div className="relative">
                 <Input
                   placeholder={dangTaiTacGia ? 'Đang tải tác giả' : 'Gõ tên tác giả'}

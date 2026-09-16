@@ -1,5 +1,7 @@
 package com.ntb.bookstore.dto.DanhGia;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,4 +24,5 @@ public class DanhGiaResponse {
     private String noiDung;
     private String trangThai;
     private String phanHoi;
+    private LocalDateTime ngayTao;
 }

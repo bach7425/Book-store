@@ -78,7 +78,4 @@ public class NguoiDung implements UserDetails {
     @Builder.Default
     private List<Sach> sachYeuThichs = new ArrayList<>();
 
-    @OneToMany(mappedBy = "nguoiCapNhat")
-    @Builder.Default
-    private List<LichSuDonHang> lichSuDonHangs = new ArrayList<>();
 }

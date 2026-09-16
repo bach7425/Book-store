@@ -18,6 +18,8 @@ import com.ntb.bookstore.dto.ApiResponse;
 import com.ntb.bookstore.dto.PageResponse;
 import com.ntb.bookstore.dto.DonHang.DonHangResponse;
 import com.ntb.bookstore.dto.DonHang.TaoDonHangRequest;
+import com.ntb.bookstore.dto.MaGiamGia.KiemTraMaGiamGiaRequest;
+import com.ntb.bookstore.dto.MaGiamGia.KiemTraMaGiamGiaResponse;
 import com.ntb.bookstore.service.DonHangService;
 import com.ntb.bookstore.service.XacThucService;
 
@@ -44,6 +46,14 @@ public class DonHangController {
         return ResponseEntity.ok(ApiResponse.of(true, "Tạo đơn hàng thành công", LocalDateTime.now(), response));
     }
 
+    @PostMapping("/kiem-tra-ma-giam-gia")
+    @PreAuthorize("hasAnyAuthority('ROLE_NGUOI_DUNG')")
+    public ResponseEntity<ApiResponse<KiemTraMaGiamGiaResponse>> kiemTraMaGiamGia(
+            @RequestBody @Valid KiemTraMaGiamGiaRequest request) {
+        return ResponseEntity.ok(ApiResponse.of(true, "Kiểm tra mã giảm giá thành công", LocalDateTime.now(),
+                donHangService.kiemTraMaGiamGia(request.getMaGiamGia(), request.getTongTien())));
+    }
+
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ROLE_QUAN_TRI_VIEN','ROLE_NGUOI_DUNG')")
     public ResponseEntity<ApiResponse<PageResponse<DonHangResponse>>> danhSachDonHang(
@@ -54,17 +64,6 @@ public class DonHangController {
         String baseUrl = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
         return ResponseEntity.ok(ApiResponse.of(true, "Lấy danh sách đơn hàng thành công", LocalDateTime.now(),
                 donHangService.danhSachDonHang(maNguoiDung, status, page, size, baseUrl)));
-    }
-
-    @GetMapping("/lich-su")
-    @PreAuthorize("hasAnyAuthority('ROLE_NGUOI_DUNG')")
-    public ResponseEntity<ApiResponse<PageResponse<DonHangResponse>>> lichSuDonHang(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        Long maNguoiDung = xacThucService.layMaNguoiDungHienTai();
-        String baseUrl = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
-        return ResponseEntity.ok(ApiResponse.of(true, "Lấy lịch sử đơn hàng thành công", LocalDateTime.now(),
-                donHangService.lichSuDonHang(maNguoiDung, page, size, baseUrl)));
     }
 
     @GetMapping("/{maDonHang}")

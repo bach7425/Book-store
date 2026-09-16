@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ntb.bookstore.dto.ApiResponse;
 import com.ntb.bookstore.dto.Sach.CapNhatSachRequest;
-import com.ntb.bookstore.dto.Sach.CapNhatTonKhoRequest;
 import com.ntb.bookstore.dto.Sach.SachResponse;
 import com.ntb.bookstore.dto.Sach.ThemSachRequest;
 import com.ntb.bookstore.service.SachService;
@@ -35,7 +34,11 @@ public class QuanTriSachController {
         public ResponseEntity<ApiResponse<SachResponse>> themSach(@RequestBody @Valid ThemSachRequest request) {
                 return ResponseEntity.ok(ApiResponse.of(true, "Thêm sách thành công", LocalDateTime.now(),
                                 sachService.themSach(request.getTenSach(), request.getMoTa(), request.getGia(),
-                                                request.getNhaXuatBan(), request.getMaTacGia(), request.getMaTheLoai(),
+                                                request.getNhaXuatBan(), request.getDoTuoi(),
+                                                request.getTenNhaCungCap(), request.getNguoiDich(),
+                                                request.getNgonNgu(), request.getTrongLuongGram(),
+                                                request.getKichThuocBaoBi(), request.getSoTrang(),
+                                                request.getHinhThuc(), request.getMaTacGia(), request.getMaTheLoai(),
                                                 request.getSoLuongTon())));
         }
 
@@ -45,16 +48,13 @@ public class QuanTriSachController {
                 return ResponseEntity.ok(ApiResponse.of(true, "Cập nhật sách thành công", LocalDateTime.now(),
                                 sachService.capNhatSach(maSach, request.getTenSach(), request.getMoTa(),
                                                 request.getGia(),
-                                                request.getNhaXuatBan(), request.getMaTacGia(),
+                                                request.getNhaXuatBan(), request.getDoTuoi(),
+                                                request.getTenNhaCungCap(), request.getNguoiDich(),
+                                                request.getNgonNgu(), request.getTrongLuongGram(),
+                                                request.getKichThuocBaoBi(), request.getSoTrang(),
+                                                request.getHinhThuc(), request.getMaTacGia(),
                                                 request.getMaTheLoai(),
                                                 request.getSoLuongTon())));
-        }
-
-        @PutMapping("/{maSach}/ton-kho")
-        public ResponseEntity<ApiResponse<SachResponse>> capNhatTonKho(@PathVariable Long maSach,
-                        @RequestBody @Valid CapNhatTonKhoRequest request) {
-                return ResponseEntity.ok(ApiResponse.of(true, "Cập nhật tồn kho thành công", LocalDateTime.now(),
-                                sachService.capNhatTonKho(maSach, request.getSoLuong())));
         }
 
         @PostMapping("/{maSach}/anh-bia")

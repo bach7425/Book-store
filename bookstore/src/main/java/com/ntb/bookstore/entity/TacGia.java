@@ -23,9 +23,6 @@ public class TacGia {
     @Column(columnDefinition = "TEXT")
     private String tieuSu;
 
-    @Column(columnDefinition = "TEXT")
-    private String anhDaiDien;
-
     @OneToMany(mappedBy = "tacGia")
     @Builder.Default
     private List<Sach> sachs = new ArrayList<>();

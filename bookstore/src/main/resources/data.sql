@@ -24,16 +24,6 @@ WHERE ma_danh_gia BETWEEN 1 AND 3
        )
    );
 
-DELETE FROM lich_su_don_hang
-WHERE ma_lich_su BETWEEN 1 AND 5
-   OR ma_don_hang IN (
-       SELECT ma_don_hang FROM don_hang
-       WHERE ma_nguoi_dung IN (
-           SELECT ma_nguoi_dung FROM nguoi_dung
-           WHERE ten_dang_nhap IN ('hoai.an', 'minh.binh')
-       )
-   );
-
 DELETE FROM thanh_toan
 WHERE ma_thanh_toan BETWEEN 1 AND 2
    OR ma_don_hang IN (
@@ -241,21 +231,20 @@ INSERT INTO gio_hang (ma_gio_hang, ma_nguoi_dung) VALUES
 ON DUPLICATE KEY UPDATE
     ma_nguoi_dung = VALUES(ma_nguoi_dung);
 
-INSERT INTO tac_gia (ma_tac_gia, ten, tieu_su, anh_dai_dien) VALUES
-    (1, 'Nguyễn Nhật Ánh', 'Tác giả Việt Nam nổi tiếng với các tác phẩm trong trẻo về tuổi thơ, tình bạn và những rung động đầu đời.', '/uploads/authors/nguyen-nhat-anh.jpg'),
-    (2, 'Dale Carnegie', 'Tác giả và diễn giả người Mỹ, được biết đến qua các tác phẩm kinh điển về giao tiếp và phát triển bản thân.', '/uploads/authors/dale-carnegie.jpg'),
-    (3, 'Robert C. Martin', 'Kỹ sư phần mềm, tác giả nhiều cuốn sách có ảnh hưởng về mã sạch, thiết kế và kiến trúc phần mềm.', '/uploads/authors/robert-martin.jpg'),
-    (4, 'Haruki Murakami', 'Nhà văn Nhật Bản với phong cách hiện thực huyền ảo, giàu âm nhạc, cô đơn và suy tưởng.', '/uploads/authors/haruki-murakami.jpg'),
-    (5, 'Paulo Coelho', 'Nhà văn Brazil nổi tiếng với những tác phẩm giàu chất triết lý, khơi gợi niềm tin và hành trình theo đuổi ước mơ.', '/uploads/authors/paulo-coelho.jpg'),
-    (6, 'George Orwell', 'Nhà văn Anh được biết đến với các tác phẩm châm biếm chính trị sắc bén và những cảnh báo sâu sắc về quyền lực.', '/uploads/authors/george-orwell.jpg'),
-    (7, 'Yuval Noah Harari', 'Nhà sử học Israel, tác giả các cuốn sách phổ biến về lịch sử nhân loại, công nghệ và tương lai xã hội.', '/uploads/authors/yuval-noah-harari.jpg'),
-    (8, 'J.K. Rowling', 'Nhà văn Anh nổi tiếng với thế giới phép thuật Harry Potter, giàu trí tưởng tượng và sức hấp dẫn với nhiều thế hệ độc giả.', '/uploads/authors/jk-rowling.jpg'),
-    (9, 'Napoleon Hill', 'Tác giả người Mỹ với nhiều tác phẩm kinh điển về tư duy thành công, mục tiêu và phát triển cá nhân.', '/uploads/authors/napoleon-hill.jpg'),
-    (10, 'Daniel Kahneman', 'Nhà tâm lý học đoạt giải Nobel Kinh tế, nổi tiếng với các nghiên cứu về phán đoán, ra quyết định và thiên kiến nhận thức.', '/uploads/authors/daniel-kahneman.jpg')
+INSERT INTO tac_gia (ma_tac_gia, ten, tieu_su) VALUES
+    (1, 'Nguyễn Nhật Ánh', 'Tác giả Việt Nam nổi tiếng với các tác phẩm trong trẻo về tuổi thơ, tình bạn và những rung động đầu đời.'),
+    (2, 'Dale Carnegie', 'Tác giả và diễn giả người Mỹ, được biết đến qua các tác phẩm kinh điển về giao tiếp và phát triển bản thân.'),
+    (3, 'Robert C. Martin', 'Kỹ sư phần mềm, tác giả nhiều cuốn sách có ảnh hưởng về mã sạch, thiết kế và kiến trúc phần mềm.'),
+    (4, 'Haruki Murakami', 'Nhà văn Nhật Bản với phong cách hiện thực huyền ảo, giàu âm nhạc, cô đơn và suy tưởng.'),
+    (5, 'Paulo Coelho', 'Nhà văn Brazil nổi tiếng với những tác phẩm giàu chất triết lý, khơi gợi niềm tin và hành trình theo đuổi ước mơ.'),
+    (6, 'George Orwell', 'Nhà văn Anh được biết đến với các tác phẩm châm biếm chính trị sắc bén và những cảnh báo sâu sắc về quyền lực.'),
+    (7, 'Yuval Noah Harari', 'Nhà sử học Israel, tác giả các cuốn sách phổ biến về lịch sử nhân loại, công nghệ và tương lai xã hội.'),
+    (8, 'J.K. Rowling', 'Nhà văn Anh nổi tiếng với thế giới phép thuật Harry Potter, giàu trí tưởng tượng và sức hấp dẫn với nhiều thế hệ độc giả.'),
+    (9, 'Napoleon Hill', 'Tác giả người Mỹ với nhiều tác phẩm kinh điển về tư duy thành công, mục tiêu và phát triển cá nhân.'),
+    (10, 'Daniel Kahneman', 'Nhà tâm lý học đoạt giải Nobel Kinh tế, nổi tiếng với các nghiên cứu về phán đoán, ra quyết định và thiên kiến nhận thức.')
 ON DUPLICATE KEY UPDATE
     ten = VALUES(ten),
-    tieu_su = VALUES(tieu_su),
-    anh_dai_dien = VALUES(anh_dai_dien);
+    tieu_su = VALUES(tieu_su);
 
 INSERT INTO the_loai (ma_the_loai, ten, mo_ta) VALUES
     (1, 'Văn học Việt Nam', 'Tác phẩm văn học trong nước, gần gũi với đời sống và cảm xúc của độc giả Việt.'),
@@ -269,40 +258,41 @@ ON DUPLICATE KEY UPDATE
 
 INSERT INTO sach (
     ma_sach, ten_sach, mo_ta, gia, anh_bia, nha_xuat_ban,
-    ma_tac_gia, ngay_xuat_ban
+    ma_tac_gia, ngay_xuat_ban, do_tuoi, ten_nha_cung_cap, nguoi_dich,
+    ngon_ngu, trong_luong_gram, kich_thuoc_bao_bi, so_trang, hinh_thuc
 ) VALUES
-    (1, 'Mắt Biếc', 'Câu chuyện trong trẻo và man mác buồn về tình yêu tuổi học trò, ký ức làng quê và những điều không thể nói thành lời.',
-     89000.00, '/uploads/sach/mat-biec.jpg', 'NXB Trẻ', 1, '2019-05-20'),
-    (2, 'Đắc Nhân Tâm', 'Những nguyên tắc nền tảng giúp ứng xử khéo léo, giao tiếp hiệu quả và tạo thiện cảm trong cuộc sống.',
-     96000.00, '/uploads/sach/dac-nhan-tam.jpg', 'NXB Tổng hợp TP.HCM', 2, '2020-03-10'),
-    (3, 'Clean Code', 'Hướng dẫn viết mã rõ ràng, dễ đọc, dễ bảo trì và có chất lượng cao cho lập trình viên chuyên nghiệp.',
-     420000.00, '/uploads/sach/clean-code.jpg', 'Prentice Hall', 3, '2008-08-01'),
-    (4, 'Rừng Na Uy', 'Một tiểu thuyết sâu lắng về tuổi trẻ, tình yêu, mất mát và hành trình trưởng thành nhiều day dứt.',
-     135000.00, '/uploads/sach/rung-na-uy.jpg', 'NXB Hội Nhà Văn', 4, '2021-11-12'),
-    (5, 'Tôi Thấy Hoa Vàng Trên Cỏ Xanh', 'Ký ức tuổi thơ miền quê trong veo, ấm áp và nhiều rung động qua lăng kính hồn nhiên của trẻ nhỏ.',
-     110000.00, '/uploads/sach/toi-thay-hoa-vang.jpg', 'NXB Trẻ', 1, '2018-04-15'),
-    (6, 'Clean Architecture', 'Các nguyên tắc thiết kế kiến trúc phần mềm bền vững, tách biệt trách nhiệm và dễ thích nghi với thay đổi.',
-     510000.00, '/uploads/sach/clean-architecture.jpg', 'Prentice Hall', 3, '2017-09-20'),
-    (7, 'Nhà Giả Kim', 'Câu chuyện giàu chất ngụ ngôn về hành trình đi tìm kho báu, lắng nghe trái tim và theo đuổi vận mệnh cá nhân.',
-     79000.00, '/uploads/sach/nha-gia-kim.jpg', 'NXB Hội Nhà Văn', 5, '2020-06-18'),
-    (8, '1984', 'Tiểu thuyết phản địa đàng kinh điển về giám sát, kiểm soát tư tưởng và sự mong manh của tự do cá nhân.',
-     125000.00, '/uploads/sach/1984.jpg', 'NXB Văn Học', 6, '2021-02-22'),
-    (9, 'Trại Súc Vật', 'Một ngụ ngôn chính trị ngắn gọn, sắc lạnh về quyền lực, lý tưởng bị bóp méo và vòng lặp áp bức.',
-     85000.00, '/uploads/sach/trai-suc-vat.jpg', 'NXB Văn Học', 6, '2021-03-12'),
-    (10, 'Sapiens: Lược Sử Loài Người', 'Bức tranh rộng lớn về lịch sử nhân loại, từ cách mạng nhận thức đến xã hội hiện đại và những câu hỏi về tương lai.',
-     189000.00, '/uploads/sach/sapiens.jpg', 'NXB Thế Giới', 7, '2022-08-05'),
-    (11, 'Homo Deus: Lược Sử Tương Lai', 'Một góc nhìn táo bạo về tương lai của con người trước dữ liệu lớn, trí tuệ nhân tạo và khát vọng vượt giới hạn sinh học.',
-     209000.00, '/uploads/sach/homo-deus.jpg', 'NXB Thế Giới', 7, '2022-09-10'),
-    (12, 'Harry Potter Và Hòn Đá Phù Thủy', 'Tập mở đầu đưa độc giả bước vào thế giới phép thuật Hogwarts, nơi tình bạn, lòng can đảm và bí mật cùng hiện diện.',
-     150000.00, '/uploads/sach/harry-potter-hon-da-phu-thuy.jpg', 'NXB Trẻ', 8, '2023-01-15'),
-    (13, 'Nghĩ Giàu Làm Giàu', 'Cuốn sách kinh điển về tư duy làm giàu, mục tiêu rõ ràng, sự kiên trì và sức mạnh của niềm tin.',
-     115000.00, '/uploads/sach/nghi-giau-lam-giau.jpg', 'NXB Tổng hợp TP.HCM', 9, '2020-11-20'),
-    (14, 'Tư Duy Nhanh Và Chậm', 'Khám phá hai hệ thống tư duy chi phối cách con người phán đoán, lựa chọn và mắc sai lầm trong đời sống.',
-     269000.00, '/uploads/sach/tu-duy-nhanh-va-cham.jpg', 'NXB Thế Giới', 10, '2021-07-30'),
-    (15, 'Cho Tôi Xin Một Vé Đi Tuổi Thơ', 'Một chuyến tàu dịu dàng trở về tuổi thơ, nơi ký ức, nghịch ngợm và nỗi buồn rất nhẹ cùng song hành.',
-     95000.00, '/uploads/sach/cho-toi-xin-mot-ve-di-tuoi-tho.jpg', 'NXB Trẻ', 1, '2018-09-05'),
-    (16, 'Tôi Là Bêtô', 'Câu chuyện hồn nhiên, hóm hỉnh qua góc nhìn của một chú cún, mở ra nhiều suy ngẫm dễ thương về đời sống.',
-     88000.00, '/uploads/sach/toi-la-beto.jpg', 'NXB Trẻ', 1, '2019-03-25')
+    (1, 'Mắt Biếc', 'Mắt Biếc là câu chuyện trong trẻo và man mác buồn về Ngạn, Hà Lan, ký ức làng Đo Đo và một tình yêu tuổi học trò kéo dài qua năm tháng. Tác phẩm nổi bật bởi giọng văn dịu dàng, giàu hình ảnh, đưa người đọc trở lại những ngày thơ ấu với sân trường, hàng cây, những rung động đầu đời và cả nỗi tiếc nuối khi tình cảm không đi đến cùng. Cuốn sách phù hợp với độc giả yêu văn học Việt Nam, thích những câu chuyện nhẹ nhàng nhưng đọng lại lâu trong lòng.',
+     89000.00, '/uploads/sach/mat-biec.jpg', 'NXB Trẻ', 1, '2019-05-20', '13+', 'NXB Trẻ', null, 'Tiếng Việt', 250, '20 x 13 x 1.2 cm', 300, 'Bìa mềm'),
+    (2, 'Đắc Nhân Tâm', 'Đắc Nhân Tâm trình bày những nguyên tắc nền tảng trong giao tiếp, ứng xử và xây dựng mối quan hệ tích cực. Thông qua các câu chuyện ngắn gọn, dễ hiểu, cuốn sách gợi ý cách lắng nghe, thấu hiểu, khích lệ người khác và tạo thiện cảm trong công việc lẫn đời sống cá nhân. Đây là lựa chọn phù hợp cho người muốn cải thiện kỹ năng giao tiếp, bán hàng, quản lý đội nhóm hoặc đơn giản là cư xử tinh tế hơn mỗi ngày.',
+     96000.00, '/uploads/sach/dac-nhan-tam.jpg', 'NXB Tổng hợp TP.HCM', 2, '2020-03-10', '15+', 'NXB Tổng hợp TP.HCM', 'Nguyễn Văn Phước', 'Tiếng Việt', 320, '20.5 x 14.5 x 1.6 cm', 320, 'Bìa mềm'),
+    (3, 'Clean Code', 'Clean Code là tài liệu kinh điển dành cho lập trình viên muốn nâng chất lượng mã nguồn từ mức chạy được lên mức dễ đọc, dễ hiểu và dễ bảo trì. Sách bàn về cách đặt tên, tổ chức hàm, xử lý lỗi, viết kiểm thử, quản lý phụ thuộc và nhận diện những dấu hiệu mã xấu trong dự án thực tế. Nội dung phù hợp với lập trình viên đã có nền tảng cơ bản, đặc biệt là người làm việc trong đội nhóm hoặc duy trì hệ thống lâu dài.',
+     420000.00, '/uploads/sach/clean-code.jpg', 'Prentice Hall', 3, '2008-08-01', '16+', 'Pearson Education', null, 'Tiếng Anh', 820, '23.5 x 18 x 3 cm', 464, 'Bìa mềm'),
+    (4, 'Rừng Na Uy', 'Rừng Na Uy là tiểu thuyết sâu lắng về tuổi trẻ, tình yêu, cô đơn, mất mát và hành trình trưởng thành nhiều day dứt. Qua ký ức của Toru Watanabe, Haruki Murakami dẫn người đọc bước vào một thế giới vừa thực vừa mơ, nơi âm nhạc, nỗi buồn và những lựa chọn khó khăn luôn hiện diện. Tác phẩm phù hợp với độc giả trưởng thành, yêu văn chương Nhật Bản và những câu chuyện nội tâm giàu cảm xúc.',
+     135000.00, '/uploads/sach/rung-na-uy.jpg', 'NXB Hội Nhà Văn', 4, '2021-11-12', '18+', 'Nhã Nam', 'Trịnh Lữ', 'Tiếng Việt', 420, '20.5 x 14 x 2 cm', 552, 'Bìa mềm'),
+    (5, 'Tôi Thấy Hoa Vàng Trên Cỏ Xanh', 'Tôi Thấy Hoa Vàng Trên Cỏ Xanh mở ra thế giới tuổi thơ miền quê qua ánh nhìn hồn nhiên, trong trẻo nhưng không thiếu những va vấp đầu đời. Câu chuyện xoay quanh tình anh em, tình bạn, những bí mật nhỏ bé, sự ghen tị, lòng bao dung và vẻ đẹp bình dị của làng quê Việt Nam. Với văn phong nhẹ nhàng, giàu cảm xúc, cuốn sách phù hợp cho thiếu nhi, thanh thiếu niên và cả người lớn muốn tìm lại ký ức tuổi thơ.',
+     110000.00, '/uploads/sach/toi-thay-hoa-vang.jpg', 'NXB Trẻ', 1, '2018-04-15', '10+', 'NXB Trẻ', null, 'Tiếng Việt', 300, '20 x 13 x 1.5 cm', 380, 'Bìa mềm'),
+    (6, 'Clean Architecture', 'Clean Architecture tập trung vào cách thiết kế hệ thống phần mềm bền vững, dễ kiểm thử và ít phụ thuộc vào framework hay cơ sở dữ liệu cụ thể. Robert C. Martin giải thích các nguyên tắc phân tách trách nhiệm, ranh giới kiến trúc, dependency rule và cách tổ chức mã để hệ thống có thể thích nghi với thay đổi. Sách phù hợp với lập trình viên backend, kiến trúc sư phần mềm, tech lead và những ai đang xây dựng ứng dụng quy mô vừa đến lớn.',
+     510000.00, '/uploads/sach/clean-architecture.jpg', 'Prentice Hall', 3, '2017-09-20', '16+', 'Pearson Education', null, 'Tiếng Anh', 780, '23.5 x 18 x 2.7 cm', 432, 'Bìa mềm'),
+    (7, 'Nhà Giả Kim', 'Nhà Giả Kim là câu chuyện giàu chất ngụ ngôn về Santiago, chàng chăn cừu lên đường tìm kho báu và dần học cách lắng nghe trái tim mình. Hành trình ấy không chỉ là chuyến đi qua sa mạc, mà còn là quá trình nhận ra ước mơ, niềm tin, tình yêu và ý nghĩa của những dấu hiệu trong cuộc sống. Cuốn sách có văn phong giản dị, truyền cảm hứng, phù hợp với độc giả yêu thích phát triển bản thân và những câu chuyện mang màu sắc triết lý nhẹ nhàng.',
+     79000.00, '/uploads/sach/nha-gia-kim.jpg', 'NXB Hội Nhà Văn', 5, '2020-06-18', '12+', 'Nhã Nam', 'Lê Chu Cầu', 'Tiếng Việt', 180, '20.5 x 13 x 1 cm', 228, 'Bìa mềm'),
+    (8, '1984', '1984 là tiểu thuyết phản địa đàng kinh điển khắc họa một xã hội bị giám sát toàn diện, nơi ngôn ngữ, ký ức và tư tưởng cá nhân đều có thể bị kiểm soát. Qua số phận Winston Smith, George Orwell đặt ra những câu hỏi sắc lạnh về quyền lực, sự thật, tự do và nỗi sợ hãi trong đời sống chính trị. Tác phẩm phù hợp với độc giả yêu văn học kinh điển, quan tâm đến xã hội, truyền thông và những cảnh báo về chủ nghĩa toàn trị.',
+     125000.00, '/uploads/sach/1984.jpg', 'NXB Văn Học', 6, '2021-02-22', '16+', 'Đông A', 'Đặng Phương-Nghi', 'Tiếng Việt', 360, '20.5 x 14.5 x 1.8 cm', 400, 'Bìa mềm'),
+    (9, 'Trại Súc Vật', 'Trại Súc Vật là một ngụ ngôn chính trị ngắn gọn nhưng sắc lạnh về quyền lực, lý tưởng và sự tha hóa. Bằng câu chuyện các con vật nổi dậy giành quyền làm chủ trang trại, George Orwell phơi bày cách một cuộc cách mạng có thể bị bóp méo khi quyền lực rơi vào tay những kẻ thao túng. Cuốn sách dễ đọc, nhiều tầng nghĩa, phù hợp với độc giả muốn tiếp cận văn học chính trị qua một hình thức cô đọng và giàu tính biểu tượng.',
+     85000.00, '/uploads/sach/trai-suc-vat.jpg', 'NXB Văn Học', 6, '2021-03-12', '15+', 'Đông A', 'An Lý', 'Tiếng Việt', 220, '20.5 x 14.5 x 1 cm', 184, 'Bìa mềm'),
+    (10, 'Sapiens: Lược Sử Loài Người', 'Sapiens: Lược Sử Loài Người đưa người đọc đi qua hành trình phát triển của nhân loại từ thời săn bắt hái lượm, cách mạng nhận thức, cách mạng nông nghiệp cho đến xã hội hiện đại. Yuval Noah Harari kết hợp lịch sử, sinh học, kinh tế và triết học để lý giải vì sao Homo sapiens có thể thống trị thế giới và xây dựng những hệ thống niềm tin phức tạp. Sách phù hợp với độc giả yêu lịch sử, khoa học xã hội và những câu hỏi lớn về con người.',
+     189000.00, '/uploads/sach/sapiens.jpg', 'NXB Thế Giới', 7, '2022-08-05', '16+', 'Omega Plus', 'Nguyễn Thủy Chung', 'Tiếng Việt', 620, '24 x 16 x 2.5 cm', 554, 'Bìa mềm'),
+    (11, 'Homo Deus: Lược Sử Tương Lai', 'Homo Deus: Lược Sử Tương Lai tiếp nối những suy tư của Sapiens bằng cách nhìn về các tham vọng mới của con người trong thế kỷ dữ liệu, trí tuệ nhân tạo và công nghệ sinh học. Harari đặt câu hỏi liệu nhân loại sẽ theo đuổi bất tử, hạnh phúc và quyền năng đến đâu, đồng thời cảnh báo những hệ quả xã hội khi thuật toán ngày càng hiểu con người hơn chính họ. Cuốn sách phù hợp với độc giả quan tâm đến tương lai, công nghệ và triết học hiện đại.',
+     209000.00, '/uploads/sach/homo-deus.jpg', 'NXB Thế Giới', 7, '2022-09-10', '16+', 'Omega Plus', 'Dương Ngọc Trà', 'Tiếng Việt', 650, '24 x 16 x 2.6 cm', 568, 'Bìa mềm'),
+    (12, 'Harry Potter Và Hòn Đá Phù Thủy', 'Harry Potter Và Hòn Đá Phù Thủy là tập mở đầu đưa độc giả bước vào thế giới phép thuật Hogwarts cùng Harry, Ron và Hermione. Câu chuyện kết hợp phiêu lưu, bí mật, tình bạn, lòng can đảm và cảm giác kỳ diệu của tuổi thơ khi một cậu bé bình thường phát hiện mình thuộc về một thế giới hoàn toàn khác. Tác phẩm phù hợp với thiếu nhi, thanh thiếu niên và những độc giả yêu fantasy nhẹ nhàng, giàu trí tưởng tượng.',
+     150000.00, '/uploads/sach/harry-potter-hon-da-phu-thuy.jpg', 'NXB Trẻ', 8, '2023-01-15', '9+', 'NXB Trẻ', 'Lý Lan', 'Tiếng Việt', 380, '20 x 14 x 1.8 cm', 366, 'Bìa mềm'),
+    (13, 'Nghĩ Giàu Làm Giàu', 'Nghĩ Giàu Làm Giàu là cuốn sách kinh điển về tư duy thành công, mục tiêu rõ ràng, sự kiên trì và sức mạnh của niềm tin. Napoleon Hill tổng hợp những nguyên tắc được rút ra từ quá trình quan sát nhiều doanh nhân thành đạt, nhấn mạnh vai trò của khát vọng, kế hoạch, hành động và môi trường hỗ trợ. Sách phù hợp với người quan tâm đến kinh doanh, phát triển cá nhân và xây dựng tư duy chủ động trong công việc.',
+     115000.00, '/uploads/sach/nghi-giau-lam-giau.jpg', 'NXB Tổng hợp TP.HCM', 9, '2020-11-20', '15+', 'First News', 'Việt Khương', 'Tiếng Việt', 290, '20.5 x 14.5 x 1.5 cm', 312, 'Bìa mềm'),
+    (14, 'Tư Duy Nhanh Và Chậm', 'Tư Duy Nhanh Và Chậm khám phá hai hệ thống tư duy chi phối cách con người đánh giá, lựa chọn và mắc sai lầm trong đời sống. Daniel Kahneman trình bày nhiều thí nghiệm tâm lý nổi tiếng để giải thích thiên kiến nhận thức, sự tự tin quá mức, hiệu ứng khung và những giới hạn trong ra quyết định. Cuốn sách phù hợp với độc giả quan tâm đến tâm lý học, kinh tế hành vi, quản trị, đầu tư và cách suy nghĩ tỉnh táo hơn.',
+     269000.00, '/uploads/sach/tu-duy-nhanh-va-cham.jpg', 'NXB Thế Giới', 10, '2021-07-30', '16+', 'Alpha Books', 'Hương Lan', 'Tiếng Việt', 700, '24 x 16 x 3 cm', 612, 'Bìa mềm'),
+    (15, 'Cho Tôi Xin Một Vé Đi Tuổi Thơ', 'Cho Tôi Xin Một Vé Đi Tuổi Thơ là chuyến tàu dịu dàng đưa người đọc trở lại thế giới trẻ nhỏ, nơi mọi thứ đều có thể được nhìn bằng trí tưởng tượng và sự hồn nhiên. Nguyễn Nhật Ánh kể về những trò nghịch ngợm, tình bạn, cảm giác lớn lên và nỗi buồn rất nhẹ của tuổi thơ bằng giọng văn ấm áp, dí dỏm. Cuốn sách phù hợp với độc giả mọi lứa tuổi, đặc biệt là những ai muốn tìm một khoảng lặng trong trẻo giữa đời sống bận rộn.',
+     95000.00, '/uploads/sach/cho-toi-xin-mot-ve-di-tuoi-tho.jpg', 'NXB Trẻ', 1, '2018-09-05', '10+', 'NXB Trẻ', null, 'Tiếng Việt', 240, '20 x 13 x 1.2 cm', 208, 'Bìa mềm'),
+    (16, 'Tôi Là Bêtô', 'Tôi Là Bêtô kể chuyện đời sống qua góc nhìn hồn nhiên, hóm hỉnh của một chú cún tên Bêtô. Từ những quan sát tưởng như nhỏ bé về con người, đồ vật, thói quen và tình cảm, câu chuyện mở ra nhiều suy ngẫm nhẹ nhàng về sự gắn bó, niềm vui, nỗi sợ và cách ta yêu thương nhau. Văn phong gần gũi, dễ đọc, phù hợp với thiếu nhi, gia đình và độc giả yêu những câu chuyện trong sáng nhưng vẫn có chiều sâu cảm xúc.',
+     88000.00, '/uploads/sach/toi-la-beto.jpg', 'NXB Trẻ', 1, '2019-03-25', '8+', 'NXB Trẻ', null, 'Tiếng Việt', 210, '20 x 13 x 1 cm', 200, 'Bìa mềm')
 ON DUPLICATE KEY UPDATE
     ten_sach = VALUES(ten_sach),
     mo_ta = VALUES(mo_ta),
@@ -310,7 +300,15 @@ ON DUPLICATE KEY UPDATE
     anh_bia = VALUES(anh_bia),
     nha_xuat_ban = VALUES(nha_xuat_ban),
     ma_tac_gia = VALUES(ma_tac_gia),
-    ngay_xuat_ban = VALUES(ngay_xuat_ban);
+    ngay_xuat_ban = VALUES(ngay_xuat_ban),
+    do_tuoi = VALUES(do_tuoi),
+    ten_nha_cung_cap = VALUES(ten_nha_cung_cap),
+    nguoi_dich = VALUES(nguoi_dich),
+    ngon_ngu = VALUES(ngon_ngu),
+    trong_luong_gram = VALUES(trong_luong_gram),
+    kich_thuoc_bao_bi = VALUES(kich_thuoc_bao_bi),
+    so_trang = VALUES(so_trang),
+    hinh_thuc = VALUES(hinh_thuc);
 
 INSERT INTO sach_the_loai (ma_sach, ma_the_loai) VALUES
     (1, 1),
@@ -446,21 +444,6 @@ ON DUPLICATE KEY UPDATE
     thoi_gian_thanh_toan = VALUES(thoi_gian_thanh_toan),
     ngay_tao = VALUES(ngay_tao);
 
-INSERT INTO lich_su_don_hang (
-    ma_lich_su, ma_don_hang, trang_thai, ghi_chu, ma_nguoi_cap_nhat, thoi_gian
-) VALUES
-    (1, 1, 'CHO_XU_LY', 'Khách hàng đã tạo đơn hàng.', null, DATE_SUB(NOW(), INTERVAL 4 DAY)),
-    (2, 1, 'DA_XAC_NHAN', 'Đơn hàng đã được xác nhận.', 1, DATE_SUB(NOW(), INTERVAL 3 DAY)),
-    (3, 1, 'DA_GIAO', 'Đơn hàng đã giao thành công.', 1, DATE_SUB(NOW(), INTERVAL 2 DAY)),
-    (4, 2, 'CHO_XU_LY', 'Khách hàng đã tạo đơn hàng.', null, DATE_SUB(NOW(), INTERVAL 1 DAY)),
-    (5, 2, 'DANG_GIAO', 'Đơn hàng đang trên đường giao.', 1, NOW())
-ON DUPLICATE KEY UPDATE
-    ma_don_hang = VALUES(ma_don_hang),
-    trang_thai = VALUES(trang_thai),
-    ghi_chu = VALUES(ghi_chu),
-    ma_nguoi_cap_nhat = VALUES(ma_nguoi_cap_nhat),
-    thoi_gian = VALUES(thoi_gian);
-
 INSERT INTO danh_gia (
     ma_danh_gia, ma_nguoi_dung, ma_sach, so_sao,
     noi_dung, trang_thai, phan_hoi, ngay_tao, ngay_cap_nhat
@@ -484,7 +467,7 @@ INSERT INTO thong_bao (
     (1, 2, 'Đơn hàng đã giao', 'Đơn hàng của bạn đã được giao thành công.', 'DON_HANG', true, DATE_SUB(NOW(), INTERVAL 2 DAY), '/don-hang'),
     (2, 2, 'Mã giảm giá mới', 'Dùng mã FREESHIP cho đơn hàng từ 200.000đ.', 'MA_GIAM_GIA', false, NOW(), '/'),
     (3, 3, 'Đơn hàng đang giao', 'Đơn hàng của bạn đang trên đường giao.', 'DON_HANG', false, NOW(), '/don-hang'),
-    (4, 1, 'Đánh giá chờ duyệt', 'Có đánh giá mới cần duyệt.', 'DANH_GIA', false, NOW(), '/admin/danh-gia')
+    (4, 1, 'Đánh giá chờ duyệt', 'Có đánh giá mới cần duyệt.', 'DANH_GIA', false, NOW(), '/quan-tri/danh-gia')
 ON DUPLICATE KEY UPDATE
     ma_nguoi_dung = VALUES(ma_nguoi_dung),
     tieu_de = VALUES(tieu_de),

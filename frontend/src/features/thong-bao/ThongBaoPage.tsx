@@ -10,8 +10,8 @@ import type { ThongBao } from '../../types';
 import { nhanLoaiThongBao } from '../../utils/thongBaoHienThi';
 
 export function ThongBaoPage() {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
   const page = Number(params.get('page') ?? 0);
   const baoTin = useToastStore((state) => state.baoTin);

@@ -22,6 +22,16 @@ public class CapNhatSachRequest {
     @DecimalMin(value = "0.00", message = "Giá sách không được âm")
     private BigDecimal gia;
     private String nhaXuatBan;
+    private String doTuoi;
+    private String tenNhaCungCap;
+    private String nguoiDich;
+    private String ngonNgu;
+    @Min(value = 0, message = "Trọng lượng không được âm")
+    private Integer trongLuongGram;
+    private String kichThuocBaoBi;
+    @Min(value = 0, message = "Số trang không được âm")
+    private Integer soTrang;
+    private String hinhThuc;
     private Long maTacGia;
     private List<Long> maTheLoai;
     @Min(value = 0, message = "Tồn kho không được âm")

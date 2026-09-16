@@ -1,6 +1,5 @@
-import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { toast } from 'sonner';
 import { AdminLayout } from './app/AdminLayout';
 import { PublicLayout } from './app/PublicLayout';
 import { Toaster } from './components/ui/Toaster';
@@ -28,34 +27,7 @@ import { BaoVeRoute } from './features/xac-thuc/BaoVeRoute';
 import { DangKyPage } from './features/xac-thuc/DangKyPage';
 import { DangNhapPage } from './features/xac-thuc/DangNhapPage';
 
-function tenDuLieuDaTai(queryKey: readonly unknown[]) {
-  const key = String(queryKey[0] ?? 'du-lieu');
-  const bangTen: Record<string, string> = {
-    sach: 'sách',
-    'the-loai': 'thể loại',
-    'danh-gia': 'đánh giá',
-    'gio-hang': 'giỏ hàng',
-    'dia-chi': 'địa chỉ',
-    'don-hang': 'đơn hàng',
-    'nguoi-dung': 'tài khoản',
-    'sach-yeu-thich': 'danh sách yêu thích',
-    'thong-bao': 'thông báo',
-    'quan-tri': 'dữ liệu quản trị',
-  };
-  return bangTen[key] ?? 'dữ liệu';
-}
-
 const queryClient = new QueryClient({
-  queryCache: new QueryCache({
-    onSuccess: (_data, query) => {
-      if (query.meta?.anThongBao) return;
-      toast.success(`Đã tải ${tenDuLieuDaTai(query.queryKey)} thành công`);
-    },
-    onError: (error, query) => {
-      if (query.meta?.anThongBao) return;
-      toast.error(error.message || `Không tải được ${tenDuLieuDaTai(query.queryKey)}`);
-    },
-  }),
   defaultOptions: {
     queries: { retry: 1, staleTime: 30_000 },
   },

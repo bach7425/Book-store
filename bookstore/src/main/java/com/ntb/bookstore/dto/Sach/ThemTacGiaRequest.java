@@ -16,5 +16,4 @@ public  class ThemTacGiaRequest {
     @NotBlank(message = "Tên tác giả không được để trống")
     private String ten;
     private String tieuSu;
-    private String anhDaiDien;
 }

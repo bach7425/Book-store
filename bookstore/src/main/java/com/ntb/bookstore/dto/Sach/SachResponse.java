@@ -22,6 +22,14 @@ public class SachResponse {
     private BigDecimal gia;
     private String anhBia;
     private String nhaXuatBan;
+    private String doTuoi;
+    private String tenNhaCungCap;
+    private String nguoiDich;
+    private String ngonNgu;
+    private Integer trongLuongGram;
+    private String kichThuocBaoBi;
+    private Integer soTrang;
+    private String hinhThuc;
     private LocalDate ngayXuatBan;
     private TacGiaResponse tacGia;
     private List<TheLoaiResponse> theLoais;

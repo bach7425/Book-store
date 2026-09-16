@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ntb.bookstore.entity.Sach;
 import com.ntb.bookstore.entity.TheLoai;
 import com.ntb.bookstore.repository.SachRepository;
+import com.ntb.bookstore.repository.TonKhoRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class RagService {
     private final VectorStore vectorStore;
     private final SachRepository sachRepository;
+    private final TonKhoRepository tonKhoRepository;
 
     @Transactional(readOnly = true)
     public void napDuLieuRag() {
@@ -31,25 +33,39 @@ public class RagService {
     }
 
     public void themSachVaoVectorStore(Sach sach) {
+        String documentId = taoDocumentId(sach.getMaSach());
+        vectorStore.delete(List.of(documentId));
 
         Document document = chuyenThanhDocument(sach);
 
         vectorStore.add(List.of(document));
     }
 
+    private String taoDocumentId(Long maSach) {
+        return "sach-" + maSach;
+    }
+
     private Document chuyenThanhDocument(Sach sach) {
-        return new Document("""
+        Integer soLuongConHang = tonKhoRepository.findBySachMaSach(sach.getMaSach())
+                .map(tonKho -> tonKho.getSoLuong())
+                .orElse(0);
+        return new Document(taoDocumentId(sach.getMaSach()), """
                 Tên sách: %s
-                Tác giả: %s
                 Thể loại: %s
                 Mô tả: %s
                 Giá : %s
-                """.formatted(sach.getTenSach(), sach.getTacGia().getTen(),
+                Số lượng còn : %s sách
+                Tác giả: %s
+                Thông tin tác giả: %s
+                """.formatted(sach.getTenSach(),
                 sach.getTheLoais().stream().map(TheLoai::getTen).collect(Collectors.joining(", ")),
-                sach.getMoTa(), sach.getGia()),
+                sach.getMoTa(), sach.getGia(), soLuongConHang, sach.getTacGia().getTen(), sach.getTacGia().getTieuSu()),
                 Map.of(
                         "maSach", sach.getMaSach(),
                         "tenSach", sach.getTenSach(),
-                        "tacGia", sach.getTacGia().getTen()));
+                        "theLoai", sach.getTheLoais().stream().map(TheLoai::getTen).collect(Collectors.joining(", ")),
+                        "tacGia", sach.getTacGia().getTen(),
+                        "soLuongConHang", soLuongConHang,
+                        "gia", sach.getGia()));
     }
 }

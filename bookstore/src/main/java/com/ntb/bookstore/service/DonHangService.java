@@ -119,6 +119,7 @@ public class DonHangService {
         MaGiamGia maGiamGia = apDungMaGiamGiaResult.maGiamGia();
         if (maGiamGia != null) {
             maGiamGia.setSoLuongDaDung(maGiamGia.getSoLuongDaDung() + 1);
+            maGiamGiaRepository.save(maGiamGia);
         }
 
         for (var item : gioHang.getChiTietGioHangs()) {
@@ -229,14 +230,6 @@ public class DonHangService {
         return new PageResponse<>(donHangPage.map(this::toResponse), baseUrl);
     }
 
-    public PageResponse<DonHangResponse> lichSuDonHang(Long maNguoiDung, int page, int size, String baseUrl) {
-        Pageable pageable = PageRequest.of(page, size);
-        NguoiDung nguoiDung = nguoiDungRepository.findById(maNguoiDung)
-                .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy người dùng", maNguoiDung));
-        Page<DonHang> donHangPage = donHangRepository.findByNguoiDung(nguoiDung, pageable);
-        return new PageResponse<>(donHangPage.map(this::toResponse), baseUrl);
-    }
-
     public PageResponse<DonHangResponse> danhSachDonHangQuanTri(String trangThai, int page, int size, String baseUrl) {
         Pageable pageable = PageRequest.of(page, size);
         Page<DonHang> donHangPage;
@@ -270,6 +263,9 @@ public class DonHangService {
         if (!kiemTraChuyenTrangThai(donHang.getTrangThai(), newStatus)) {
             throw new HethongLoiException("Chuyển trạng thái không hợp lệ");
         }
+        if (newStatus == TrangThaiDonHang.DA_HUY) {
+            hoanTaiNguyenKhiHuyDon(donHang);
+        }
         donHang.setTrangThai(newStatus);
         if (newStatus == TrangThaiDonHang.DA_GIAO) {
             danhDauDaThanhToanKhiDaGiao(donHang);
@@ -290,22 +286,11 @@ public class DonHangService {
         if (!donHang.getNguoiDung().getMaNguoiDung().equals(maNguoiDung)) {
             throw new HethongLoiException("Bạn không có quyền hủy đơn hàng này");
         }
-        if (donHang.getTrangThai() != TrangThaiDonHang.CHO_XU_LY
-                && donHang.getTrangThai() != TrangThaiDonHang.DA_XAC_NHAN) {
-            throw new HethongLoiException("Chỉ có thể hủy đơn hàng chờ xử lý hoặc đã xác nhận");
+        if (donHang.getTrangThai() != TrangThaiDonHang.CHO_XU_LY) {
+            throw new HethongLoiException("Chỉ có thể hủy đơn hàng chờ xử lý");
         }
 
-        for (ChiTietDonHang chiTiet : donHang.getChiTietDonHangs()) {
-            TonKho tonKho = tonKhoRepository.findBySachMaSach(chiTiet.getSach().getMaSach())
-                    .orElse(TonKho.builder().sach(chiTiet.getSach()).soLuong(0).build());
-            tonKho.setSoLuong(tonKho.getSoLuong() + chiTiet.getSoLuong());
-            tonKhoRepository.save(tonKho);
-        }
-        MaGiamGia maGiamGia = donHang.getMaGiamGia();
-        if (maGiamGia != null && maGiamGia.getSoLuongDaDung() > 0) {
-            maGiamGia.setSoLuongDaDung(maGiamGia.getSoLuongDaDung() - 1);
-        }
-
+        hoanTaiNguyenKhiHuyDon(donHang);
         donHang.setTrangThai(TrangThaiDonHang.DA_HUY);
         donHangRepository.save(donHang);
         thongBaoService.guiChoNguoiDung(
@@ -315,6 +300,20 @@ public class DonHangService {
                 LoaiThongBao.DON_HANG,
                 "/don-hang/" + donHang.getMaDonHang());
         return toResponse(donHang);
+    }
+
+    private void hoanTaiNguyenKhiHuyDon(DonHang donHang) {
+        for (ChiTietDonHang chiTiet : donHang.getChiTietDonHangs()) {
+            TonKho tonKho = tonKhoRepository.findBySachMaSach(chiTiet.getSach().getMaSach())
+                    .orElse(TonKho.builder().sach(chiTiet.getSach()).soLuong(0).build());
+            tonKho.setSoLuong(tonKho.getSoLuong() + chiTiet.getSoLuong());
+            tonKhoRepository.save(tonKho);
+        }
+        MaGiamGia maGiamGia = donHang.getMaGiamGia();
+        if (maGiamGia != null && maGiamGia.getSoLuongDaDung() > 0) {
+            maGiamGia.setSoLuongDaDung(maGiamGia.getSoLuongDaDung() - 1);
+            maGiamGiaRepository.save(maGiamGia);
+        }
     }
 
     public DonHangResponse thanhToanDonHang(Long maNguoiDung, Long maDonHang) {
@@ -353,8 +352,8 @@ public class DonHangService {
             return next == TrangThaiDonHang.CHO_XU_LY;
         return switch (current) {
             case CHO_XU_LY -> next == TrangThaiDonHang.DA_XAC_NHAN || next == TrangThaiDonHang.DA_HUY;
-            case DA_XAC_NHAN -> next == TrangThaiDonHang.DANG_GIAO;
-            case DANG_GIAO -> next == TrangThaiDonHang.DA_GIAO;
+            case DA_XAC_NHAN -> next == TrangThaiDonHang.DANG_GIAO || next == TrangThaiDonHang.DA_HUY;
+            case DANG_GIAO -> next == TrangThaiDonHang.DA_GIAO || next == TrangThaiDonHang.DA_HUY;
             case DA_GIAO, DA_HUY -> false;
         };
     }

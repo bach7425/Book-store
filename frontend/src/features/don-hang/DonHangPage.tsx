@@ -11,11 +11,14 @@ import { chuanHoaVaiTro } from '../../utils/vaiTro';
 import { useXacThucStore } from '../xac-thuc/xacThucStore';
 
 function coTheHuyDon(don: DonHang) {
-  return don.trangThai === 'CHO_XU_LY' || don.trangThai === 'DA_XAC_NHAN';
+  return don.trangThai === 'CHO_XU_LY';
 }
 
 function coTheThanhToan(don: DonHang) {
-  return don.trangThai !== 'DA_HUY' && don.trangThaiThanhToan !== 'DA_THANH_TOAN' && don.trangThaiThanhToan !== 'THAT_BAI';
+  return don.phuongThucThanhToan === 'CHUYEN_KHOAN'
+    && don.trangThai !== 'DA_HUY'
+    && don.trangThaiThanhToan !== 'DA_THANH_TOAN'
+    && don.trangThaiThanhToan !== 'THAT_BAI';
 }
 
 export function DonHangPage() {
