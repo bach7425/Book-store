@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
@@ -14,17 +15,24 @@ import com.ntb.bookstore.entity.TheLoai;
 import com.ntb.bookstore.repository.SachRepository;
 import com.ntb.bookstore.repository.TonKhoRepository;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class RagService {
     private final VectorStore vectorStore;
     private final SachRepository sachRepository;
     private final TonKhoRepository tonKhoRepository;
 
+    public RagService(ObjectProvider<VectorStore> vectorStoreProvider, SachRepository sachRepository,
+            TonKhoRepository tonKhoRepository) {
+        this.vectorStore = vectorStoreProvider.getIfAvailable();
+        this.sachRepository = sachRepository;
+        this.tonKhoRepository = tonKhoRepository;
+    }
+
     @Transactional(readOnly = true)
     public void napDuLieuRag() {
+        if (vectorStore == null) {
+            return;
+        }
         List<Sach> danhSach = sachRepository.findAllForRag();
         List<Document> danhSachTaiLieu = danhSach.stream()
                 .map(this::chuyenThanhDocument)
@@ -33,6 +41,9 @@ public class RagService {
     }
 
     public void themSachVaoVectorStore(Sach sach) {
+        if (vectorStore == null) {
+            return;
+        }
         String documentId = taoDocumentId(sach.getMaSach());
         vectorStore.delete(List.of(documentId));
 

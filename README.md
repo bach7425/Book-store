@@ -123,10 +123,15 @@ JWT_BI_MAT=12345678901234567890123456789012345678901234567890
 JWT_THOI_GIAN_HIEU_LUC=3600000
 JWT_THOI_GIAN_LAM_MOI=86400000
 
-# AI Configuration (Tùy chọn cho tính năng Chatbot AI)
-GROQ_API_KEY=your_groq_api_key
-GEMINI_API_KEY=your_gemini_api_key
-TAVILY_API_KEY=your_tavily_api_key
+# AI Configuration (tùy chọn)
+# Có thể để trống 3 key này; hệ thống vẫn chạy, chỉ tắt chat AI/RAG/tìm kiếm web.
+GROQ_API_KEY=
+GEMINI_API_KEY=
+TAVILY_API_KEY=
+
+# Chỉ bật khi đã cấu hình key tương ứng.
+AI_CHAT_MODEL=none
+AI_EMBEDDING_MODEL=none
 
 # Admin Seed Account
 ADMIN_USERNAME=admin
@@ -142,6 +147,21 @@ mvn spring-boot:run
 ```
 
 Server Backend sẽ khởi chạy tại: `http://localhost:8080`
+
+Để bật lại các tính năng AI:
+
+```env
+# Chat AI qua Groq-compatible OpenAI API
+GROQ_API_KEY=your_groq_api_key
+AI_CHAT_MODEL=openai
+
+# RAG/embedding qua Gemini
+GEMINI_API_KEY=your_gemini_api_key
+AI_EMBEDDING_MODEL=google-genai
+
+# Tìm kiếm web trong chat box
+TAVILY_API_KEY=your_tavily_api_key
+```
 
 > 💡 **Lưu ý**: Lần chạy đầu tiên, Hibernate sẽ tự động tạo bảng dữ liệu và nạp dữ liệu mẫu từ `src/main/resources/data.sql`.
 
@@ -223,5 +243,4 @@ Dữ liệu khởi tạo mặc định từ `data.sql` bao gồm các thể lo�
 ## 📝 Giấy Phép (License)
 
 Dự án được phát triển phục vụ mục đích học tập và nghiên cứu. Bản quyền thuộc về tác giả.
-
 

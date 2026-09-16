@@ -3,7 +3,9 @@ package com.ntb.bookstore.service.AI_tool;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
@@ -15,19 +17,28 @@ public class ChatBoxService {
    private final ChatClient chatClient;
    private final ToolSearchWeb toolSearchWeb;
 
-   public ChatBoxService(VectorStore vectorStore, ChatClient.Builder chatClientBuilder, ToolSearchWeb toolSearchWeb) {
+   public ChatBoxService(ObjectProvider<VectorStore> vectorStoreProvider,
+         ObjectProvider<ChatModel> chatModelProvider,
+         ToolSearchWeb toolSearchWeb) {
 
-      this.vectorStore = vectorStore;
-      this.chatClient = chatClientBuilder.build();
+      this.vectorStore = vectorStoreProvider.getIfAvailable();
+      ChatModel chatModel = chatModelProvider.getIfAvailable();
+      this.chatClient = chatModel == null ? null : ChatClient.create(chatModel);
       this.toolSearchWeb = toolSearchWeb;
    }
 
    public String hoi(String cauHoi, Boolean isSearchWeb) {
-      List<Document> danhSachTaiLieuLienQuan = vectorStore.similaritySearch(
-            SearchRequest.builder()
-                  .query(cauHoi)
-                  .topK(5)
-                  .build());
+      if (chatClient == null) {
+         return "Tính năng chat AI chưa được cấu hình. Vui lòng thiết lập GROQ_API_KEY và AI_CHAT_MODEL=openai để sử dụng.";
+      }
+
+      List<Document> danhSachTaiLieuLienQuan = vectorStore == null
+            ? List.of()
+            : vectorStore.similaritySearch(
+                  SearchRequest.builder()
+                        .query(cauHoi)
+                        .topK(5)
+                        .build());
       danhSachTaiLieuLienQuan.forEach(document -> {
          System.out.println("==============");
          System.out.println(document.getText());

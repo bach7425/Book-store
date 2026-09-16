@@ -11,13 +11,18 @@ import org.springframework.web.client.RestClient;
 public class ToolSearchWeb {
         private RestClient restClient;
 
-        public ToolSearchWeb(RestClient.Builder builder, @Value("${tavily.api-key}") String apiKey) {
-                this.restClient = builder.baseUrl("https://api.tavily.com")
-                                .defaultHeader("Authorization", "Bearer " + apiKey)
-                                .build();
+        public ToolSearchWeb(RestClient.Builder builder, @Value("${tavily.api-key:}") String apiKey) {
+                if (apiKey != null && !apiKey.isBlank()) {
+                        this.restClient = builder.baseUrl("https://api.tavily.com")
+                                        .defaultHeader("Authorization", "Bearer " + apiKey)
+                                        .build();
+                }
         }
 
         public String timKiemtrenWeb(String query) {
+                if (restClient == null) {
+                        return "Tìm kiếm web chưa được cấu hình.";
+                }
                 Map<String, Object> request = Map.of(
                                 "query", query,
                                 "search_depth", "basic",
