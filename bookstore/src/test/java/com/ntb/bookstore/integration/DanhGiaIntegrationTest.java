@@ -14,7 +14,10 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
+import com.ntb.bookstore.entity.ChiTietDonHang;
+import com.ntb.bookstore.entity.DonHang;
 import com.ntb.bookstore.entity.enums.TrangThaiDanhGia;
+import com.ntb.bookstore.entity.enums.TrangThaiDonHang;
 
 class DanhGiaIntegrationTest extends BaseIntegrationTest {
 
@@ -54,6 +57,35 @@ class DanhGiaIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", bearer(user))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json(Map.of("soSao", 6, "noiDung", "Sai số sao"))))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void userCoDonChuaGiaoKhongDuocDanhGia() throws Exception {
+        var user = taoNguoiDung();
+        var sach = taoSach("Sách đang giao", BigDecimal.valueOf(100_000), 5);
+        var diaChi = taoDiaChi(user);
+        var donHang = donHangRepository.saveAndFlush(DonHang.builder()
+                .nguoiDung(user)
+                .diaChi(diaChi)
+                .tongTien(sach.getGia())
+                .phiVanChuyen(BigDecimal.valueOf(30_000))
+                .soTienGiam(BigDecimal.ZERO)
+                .tongTienThanhToan(sach.getGia().add(BigDecimal.valueOf(30_000)))
+                .trangThai(TrangThaiDonHang.DANG_GIAO)
+                .build());
+        chiTietDonHangRepository.saveAndFlush(ChiTietDonHang.builder()
+                .donHang(donHang)
+                .sach(sach)
+                .soLuong(1)
+                .donGia(sach.getGia())
+                .thanhTien(sach.getGia())
+                .build());
+
+        mockMvc.perform(post("/api/sach/{maSach}/danh-gia", sach.getMaSach())
+                .header("Authorization", bearer(user))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json(Map.of("soSao", 5, "noiDung", "Đơn chưa giao"))))
                 .andExpect(status().isBadRequest());
     }
 

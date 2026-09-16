@@ -7,7 +7,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,13 +16,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.ntb.bookstore.dto.DanhGia.DanhGiaResponse;
-import com.ntb.bookstore.entity.ChiTietDonHang;
 import com.ntb.bookstore.entity.DanhGia;
-import com.ntb.bookstore.entity.DonHang;
 import com.ntb.bookstore.entity.NguoiDung;
 import com.ntb.bookstore.entity.Sach;
 import com.ntb.bookstore.entity.enums.LoaiThongBao;
 import com.ntb.bookstore.entity.enums.TrangThaiDanhGia;
+import com.ntb.bookstore.entity.enums.TrangThaiDonHang;
 import com.ntb.bookstore.exception.HethongLoiException;
 import com.ntb.bookstore.repository.DanhGiaRepository;
 import com.ntb.bookstore.repository.DonHangRepository;
@@ -60,18 +58,11 @@ class DanhGiaServiceTest {
     void themDanhGia_daMuaSach_thiTaoDanhGiaChoDuyetVaThongBaoAdmin() {
         NguoiDung user = nguoiDung(2L);
         Sach sach = sach(1L, "Mat Biec");
-        DonHang donHang = DonHang.builder().nguoiDung(user).build();
-        donHang.getChiTietDonHangs().add(ChiTietDonHang.builder()
-                .donHang(donHang)
-                .sach(sach)
-                .soLuong(1)
-                .donGia(sach.getGia())
-                .thanhTien(sach.getGia())
-                .build());
 
         when(nguoiDungRepository.findById(2L)).thenReturn(Optional.of(user));
         when(sachRepository.findById(1L)).thenReturn(Optional.of(sach));
-        when(donHangRepository.findByNguoiDung(user)).thenReturn(List.of(donHang));
+        when(donHangRepository.existsByNguoiDungAndSachAndTrangThai(user, sach, TrangThaiDonHang.DA_GIAO))
+                .thenReturn(true);
         when(danhGiaRepository.findByNguoiDungAndSach(user, sach)).thenReturn(Optional.empty());
         when(danhGiaRepository.save(any(DanhGia.class))).thenAnswer(invocation -> {
             DanhGia danhGia = invocation.getArgument(0);
@@ -100,11 +91,12 @@ class DanhGiaServiceTest {
 
         when(nguoiDungRepository.findById(2L)).thenReturn(Optional.of(user));
         when(sachRepository.findById(1L)).thenReturn(Optional.of(sach));
-        when(donHangRepository.findByNguoiDung(user)).thenReturn(List.of());
+        when(donHangRepository.existsByNguoiDungAndSachAndTrangThai(user, sach, TrangThaiDonHang.DA_GIAO))
+                .thenReturn(false);
 
         assertThatThrownBy(() -> service.themDanhGia(2L, 1L, 5, "Hay"))
                 .isInstanceOf(HethongLoiException.class)
-                .hasMessageContaining("Chỉ người dùng đã mua sách");
+                .hasMessageContaining("đơn hàng đã giao");
     }
 
     @Test

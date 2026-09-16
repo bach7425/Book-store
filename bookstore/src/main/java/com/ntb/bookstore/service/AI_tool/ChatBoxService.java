@@ -37,6 +37,11 @@ public class ChatBoxService {
             .map(Document::getText)
             .collect(Collectors.joining("\n\n"));
       String noiDungWeb = isSearchWeb ? toolSearchWeb.timKiemtrenWeb(cauHoi) : "Không tìm kiếm trên web.";
+      System.out.println("==============");
+      System.out.println("Dữ liệu web:");
+      System.out.println(noiDungWeb);
+      System.out.println("==============");
+
       return chatClient.prompt()
             .system(
                   """

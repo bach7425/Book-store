@@ -1,5 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Filter, Search } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import type { FormEvent } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { sachApi } from '../../api/sachApi';
 import { DangTai, OTrong } from '../../components/ui/Bang';
@@ -18,6 +20,7 @@ const khoangGiaMacDinh = [
 
 export function DanhSachSachPage() {
   const [params, setParams] = useSearchParams();
+  const [tuKhoaNhap, setTuKhoaNhap] = useState(params.get('tuKhoa') ?? '');
   const maSachYeuThich = useMaSachYeuThich();
   const page = Number(params.get('page') ?? 0);
   const thamSo = {
@@ -31,6 +34,11 @@ export function DanhSachSachPage() {
   };
   const { data, isLoading, error } = useQuery({ queryKey: ['sach', thamSo], queryFn: () => sachApi.layDanhSachSach(thamSo) });
   const { data: theLoai } = useQuery({ queryKey: ['the-loai'], queryFn: sachApi.layDanhSachTheLoai });
+
+  useEffect(() => {
+    setTuKhoaNhap(params.get('tuKhoa') ?? '');
+  }, [params]);
+
   const capNhat = (ten: string, giaTri: string) => {
     const next = new URLSearchParams(params);
     if (giaTri) next.set(ten, giaTri); else next.delete(ten);
@@ -44,6 +52,10 @@ export function DanhSachSachPage() {
     next.set('page', '0');
     setParams(next);
   };
+  const timKiemTheoTuKhoa = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    capNhat('tuKhoa', tuKhoaNhap.trim());
+  };
 
   return (
     <div className="mx-auto grid max-w-[1440px] gap-8 px-4 py-10 md:px-10 lg:grid-cols-[280px_1fr]">
@@ -53,13 +65,19 @@ export function DanhSachSachPage() {
           <h1 className="font-serif-display text-2xl font-bold text-[#03192e]">Bộ lọc sách</h1>
         </div>
         <div className="mt-5 space-y-5">
-          <label className="block text-sm font-bold text-[#43474d]">
-            Từ khóa
+          <form onSubmit={timKiemTheoTuKhoa} className="block text-sm font-bold text-[#43474d]">
+            <label htmlFor="tu-khoa-sach">Từ khóa</label>
             <div className="relative mt-2">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#74777d]" size={17} />
-              <Input className="pl-10" defaultValue={thamSo.tuKhoa} onBlur={(event) => capNhat('tuKhoa', event.target.value)} placeholder="Tên sách..." />
+              <Input
+                id="tu-khoa-sach"
+                className="pl-10"
+                value={tuKhoaNhap}
+                onChange={(event) => setTuKhoaNhap(event.target.value)}
+                placeholder="Tên sách..."
+              />
             </div>
-          </label>
+          </form>
           <label className="block text-sm font-bold text-[#43474d]">
             Thể loại
             <select className="mt-2 min-h-10 w-full rounded border border-[#c4c6cd] bg-[#fbf9f8] px-3 text-sm" value={thamSo.theLoaiId ?? ''} onChange={(event) => capNhat('theLoaiId', event.target.value)}>

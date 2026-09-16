@@ -12,6 +12,7 @@ import com.ntb.bookstore.entity.NguoiDung;
 import com.ntb.bookstore.entity.Sach;
 import com.ntb.bookstore.entity.enums.LoaiThongBao;
 import com.ntb.bookstore.entity.enums.TrangThaiDanhGia;
+import com.ntb.bookstore.entity.enums.TrangThaiDonHang;
 import com.ntb.bookstore.entity.enums.VaiTro;
 import com.ntb.bookstore.exception.HethongLoiException;
 import com.ntb.bookstore.exception.KhongCoDuLieuException;
@@ -81,11 +82,11 @@ public class DanhGiaService {
                 Sach sach = sachRepository.findById(maSach)
                                 .orElseThrow(() -> new KhongCoDuLieuException("Không tìm thấy sách", maSach));
 
-                boolean daMua = donHangRepository.findByNguoiDung(nguoiDung).stream()
-                                .flatMap(donHang -> donHang.getChiTietDonHangs().stream())
-                                .anyMatch(chiTiet -> chiTiet.getSach().getMaSach().equals(maSach));
-                if (!daMua) {
-                        throw new HethongLoiException("Chỉ người dùng đã mua sách mới được đánh giá");
+                boolean daNhanHang = donHangRepository.existsByNguoiDungAndSachAndTrangThai(nguoiDung, sach,
+                                TrangThaiDonHang.DA_GIAO);
+                if (!daNhanHang) {
+                        throw new HethongLoiException(
+                                        "Chỉ người dùng đã nhận sách trong đơn hàng đã giao mới được đánh giá");
                 }
 
                 if (danhGiaRepository.findByNguoiDungAndSach(nguoiDung, sach).isPresent()) {

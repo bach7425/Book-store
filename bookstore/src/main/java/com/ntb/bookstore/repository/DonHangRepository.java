@@ -13,6 +13,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.ntb.bookstore.entity.DonHang;
 import com.ntb.bookstore.entity.NguoiDung;
+import com.ntb.bookstore.entity.Sach;
 import com.ntb.bookstore.entity.enums.TrangThaiDonHang;
 import com.ntb.bookstore.entity.enums.TrangThaiThanhToan;
 
@@ -55,4 +56,12 @@ public interface DonHangRepository extends JpaRepository<DonHang, Long> {
             "where d.nguoiDung = :nguoiDung and t.trangThai = :trangThai")
     BigDecimal tinhTongChiTieu(@Param("nguoiDung") NguoiDung nguoiDung,
             @Param("trangThai") TrangThaiThanhToan trangThai);
+
+    @Query("select count(d) > 0 from DonHang d join d.chiTietDonHangs ct " +
+            "where d.nguoiDung = :nguoiDung " +
+            "and ct.sach = :sach " +
+            "and d.trangThai = :trangThai")
+    boolean existsByNguoiDungAndSachAndTrangThai(@Param("nguoiDung") NguoiDung nguoiDung,
+            @Param("sach") Sach sach,
+            @Param("trangThai") TrangThaiDonHang trangThai);
 }

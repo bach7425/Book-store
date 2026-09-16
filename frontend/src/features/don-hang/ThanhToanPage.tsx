@@ -11,7 +11,7 @@ import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { NutQuayLai } from '../../components/ui/NutQuayLai';
 import { useToastStore } from '../../components/ui/toastStore';
-import type { DiaChi, KiemTraMaGiamGiaResponse } from '../../types';
+import type { DiaChi, GioHang, KiemTraMaGiamGiaResponse } from '../../types';
 import { dinhDangTien } from '../../utils/dinhDang';
 
 type FormDiaChi = Omit<DiaChi, 'maDiaChi'>;
@@ -98,6 +98,26 @@ export function ThanhToanPage() {
       return donHangApi.taoDonHang({ maDiaChi: maDiaChiDangChon, phuongThucThanhToan, maGiamGia: maGiamGiaDaApDung || undefined });
     },
     onSuccess: () => {
+      queryClient.setQueryData<GioHang | undefined>(['gio-hang'], (duLieuCu) => {
+        if (!duLieuCu) return duLieuCu;
+        return {
+          ...duLieuCu,
+          tongSoLuong: 0,
+          tongTien: 0,
+          thongBao: [],
+          items: {
+            ...duLieuCu.items,
+            duLieu: [],
+            tongSoPhanTu: 0,
+            tongSoTrang: 0,
+            trangTruoc: null,
+            tiepTheo: null,
+          },
+        };
+      });
+      setKetQuaMaGiamGia(null);
+      setMaGiamGia('');
+      setMaGiamGiaDaApDung('');
       queryClient.invalidateQueries({ queryKey: ['gio-hang'] });
       queryClient.invalidateQueries({ queryKey: ['don-hang'] });
       baoTin('Tạo đơn hàng thành công');
