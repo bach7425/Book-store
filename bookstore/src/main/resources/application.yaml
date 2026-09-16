@@ -48,8 +48,7 @@ spring:
             model: gemini-embedding-001
     model:
       chat: ${AI_CHAT_MODEL:none}
-      embedding:
-        text: ${AI_EMBEDDING_MODEL:none}
+      embedding: ${AI_EMBEDDING_MODEL:none}
 tavily:
   api-key: ${TAVILY_API_KEY:}
 

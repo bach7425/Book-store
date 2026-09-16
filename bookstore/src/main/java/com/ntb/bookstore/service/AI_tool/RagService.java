@@ -31,17 +31,21 @@ public class RagService {
     @Transactional(readOnly = true)
     public void napDuLieuRag() {
         if (vectorStore == null) {
+            System.out.println("RAG: Không có VectorStore, bỏ qua nạp dữ liệu.");
             return;
         }
+        System.out.println("RAG: Bắt đầu nạp dữ liệu sách vào VectorStore...");
         List<Sach> danhSach = sachRepository.findAllForRag();
         List<Document> danhSachTaiLieu = danhSach.stream()
                 .map(this::chuyenThanhDocument)
                 .collect(Collectors.toList());
         vectorStore.add(danhSachTaiLieu);
+        System.out.println("RAG: Đã nạp " + danhSachTaiLieu.size() + " tài liệu sách vào VectorStore.");
     }
 
     public void themSachVaoVectorStore(Sach sach) {
         if (vectorStore == null) {
+            System.out.println("RAG: Không có VectorStore, bỏ qua cập nhật sách " + sach.getMaSach());
             return;
         }
         String documentId = taoDocumentId(sach.getMaSach());

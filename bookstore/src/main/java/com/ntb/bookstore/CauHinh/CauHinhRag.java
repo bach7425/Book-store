@@ -5,14 +5,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.ai.vectorstore.VectorStore;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 @Configuration
 public class CauHinhRag {
     @Bean
-    @ConditionalOnBean(name = "googleGenAiTextEmbedding")
-    public VectorStore vectorStore(@Qualifier("googleGenAiTextEmbedding") EmbeddingModel embeddingModel) {
+    @ConditionalOnProperty(prefix = "spring.ai.model", name = "embedding", havingValue = "google-genai")
+    public VectorStore vectorStore(EmbeddingModel embeddingModel) {
+        System.out.println("RAG: Đã tạo VectorStore bằng EmbeddingModel " + embeddingModel.getClass().getSimpleName());
         return SimpleVectorStore.builder(embeddingModel).build();
     }
 }
