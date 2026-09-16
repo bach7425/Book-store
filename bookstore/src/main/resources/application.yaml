@@ -44,6 +44,7 @@ spring:
       genai:
         embedding:
           api-key: ${GEMINI_API_KEY:}
+          vertex-ai: false
           text:
             model: gemini-embedding-001
     model:
